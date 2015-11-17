@@ -64,11 +64,75 @@ func getPriceForFlipkart(url string) (string, float64) {
 	}
 }
 
+func getPriceForJabong(url string) (string, float64) {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	z := html.NewTokenizer(resp.Body)
+	for {
+		tt := z.Next()
+		switch {
+		case tt == html.ErrorToken:
+			return "", 0.0
+		case tt == html.StartTagToken:
+			t := z.Token()
+			isSpan := t.Data == "span"
+			if isSpan {
+				for _, attr := range t.Attr {
+					if attr.Key == "class" && strings.Contains(attr.Val, "actual-price") {
+						nxt := z.Next()
+						if nxt == html.TextToken {
+							t = z.Token()
+							return parseCurrency(t.Data)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
+func getPriceForSnapdeal(url string) (string, float64) {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	z := html.NewTokenizer(resp.Body)
+	for {
+		tt := z.Next()
+		switch {
+		case tt == html.ErrorToken:
+			return "", 0.0
+		case tt == html.StartTagToken:
+			t := z.Token()
+			isSpan := t.Data == "span"
+			if isSpan {
+				for _, attr := range t.Attr {
+					if attr.Key == "class" && strings.Contains(attr.Val, "payBlkBig") {
+						nxt := z.Next()
+						if nxt == html.TextToken {
+							t = z.Token()
+							return parseCurrency(t.Data)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		log.Fatal("Usage: ./crawl <url>")
 	}
 	url := os.Args[1]
-	curr, price := getPriceForFlipkart(url)
-	fmt.Println("Curr", curr, "Price:", price)
+	//curr, price := getPriceForFlipkart(url)
+	//curr, price := getPriceForSnapdeal(url)
+	curr, price := getPriceForJabong(url)
+	fmt.Println(curr, price)
 }
