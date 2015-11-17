@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 	"strconv"
 	"strings"
@@ -20,7 +21,7 @@ func parsePrice(priceText string) float64 {
 	return price
 }
 
-func parseCurrency(price string) (string, float64) {
+func parseCurrency(price string) float64 {
 	numberStart := 0
 	for i := 0; i < len(price); i++ {
 		_, err := strconv.Atoi(string(price[i]))
@@ -29,11 +30,12 @@ func parseCurrency(price string) (string, float64) {
 			break
 		}
 	}
-	curr := strings.Trim(price[:numberStart], " . ")
-	return curr, parsePrice(price[numberStart:])
+	// TODO: can be used later
+	//curr := strings.Trim(price[:numberStart], " . ")
+	return parsePrice(price[numberStart:])
 }
 
-func getPriceForFlipkart(url string) (string, float64) {
+func getPriceForFlipkart(url string) float64 {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -45,7 +47,7 @@ func getPriceForFlipkart(url string) (string, float64) {
 		tt := z.Next()
 		switch {
 		case tt == html.ErrorToken:
-			return "", 0.0
+			return 0.0
 		case tt == html.StartTagToken:
 			t := z.Token()
 			isSpan := t.Data == "span"
@@ -64,7 +66,7 @@ func getPriceForFlipkart(url string) (string, float64) {
 	}
 }
 
-func getPriceForJabong(url string) (string, float64) {
+func getPriceForJabong(url string) float64 {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -76,7 +78,7 @@ func getPriceForJabong(url string) (string, float64) {
 		tt := z.Next()
 		switch {
 		case tt == html.ErrorToken:
-			return "", 0.0
+			return 0.0
 		case tt == html.StartTagToken:
 			t := z.Token()
 			isSpan := t.Data == "span"
@@ -95,7 +97,7 @@ func getPriceForJabong(url string) (string, float64) {
 	}
 }
 
-func getPriceForSnapdeal(url string) (string, float64) {
+func getPriceForSnapdeal(url string) float64 {
 	resp, err := http.Get(url)
 	if err != nil {
 		log.Fatal(err)
@@ -107,7 +109,7 @@ func getPriceForSnapdeal(url string) (string, float64) {
 		tt := z.Next()
 		switch {
 		case tt == html.ErrorToken:
-			return "", 0.0
+			return 0.0
 		case tt == html.StartTagToken:
 			t := z.Token()
 			isSpan := t.Data == "span"
@@ -126,13 +128,30 @@ func getPriceForSnapdeal(url string) (string, float64) {
 	}
 }
 
+func getWebsite(uri string) string {
+	u, err := url.Parse(uri)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return u.Host
+}
+
 func main() {
 	if len(os.Args) != 2 {
 		log.Fatal("Usage: ./crawl <url>")
 	}
 	url := os.Args[1]
-	//curr, price := getPriceForFlipkart(url)
-	//curr, price := getPriceForSnapdeal(url)
-	curr, price := getPriceForJabong(url)
-	fmt.Println(curr, price)
+	website := getWebsite(url)
+
+	var price float64
+	if strings.Contains(website, "jabong") {
+		price = getPriceForJabong(url)
+	} else if strings.Contains(website, "flipkart") {
+		price = getPriceForFlipkart(url)
+	} else if strings.Contains(website, "snapdeal") {
+		price = getPriceForSnapdeal(url)
+	} else {
+		log.Fatal("Website not supported")
+	}
+	fmt.Println(price)
 }
