@@ -1,0 +1,11 @@
+{
+    "name": "Track This",
+    "version": "0.0.1",
+    "description": "Track your favorite producs online",
+    "browser_action": {
+        "default_popup": "popup.html",
+        "default_icon": "icon.png"
+    },
+    "permissions": [ "activeTab" ],
+    "manifest_version": 2
+}
