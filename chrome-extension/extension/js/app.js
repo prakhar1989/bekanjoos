@@ -47,14 +47,12 @@ var App = React.createClass({
         alert("hello world");
     },
     render() {
-
-        return (<div>
+        return <div>
             <h1>PriceTell</h1>
             <span className="tagline">Helping you track your favorite online products</span>
-            { this.state.validURL ?  <button onClick={this.addProduct} className="add-product"> Track Product </button> : null }
+            { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> Track Product </button> : null }
             <Products />
         </div>
-        )
     }
 });
 
@@ -76,17 +74,29 @@ var Products = React.createClass({
                 }
             }.bind(this));
     },
+    removeProduct(index) {
+        var product = this.state.products[index];
+        var id = product["product_id"];
+        request
+            .del(URL + '/api/product?product_id=' + id)
+            .end(function(err, res) {
+                this.setState({
+                    products: this.state.products.filter((_, i) => i !== index)
+                })
+            }.bind(this));
+
+    },
     render() {
         var productList = this.state.products.map(function(prod, i) {
             return <li key={i}> 
                 <div className="info">
                     <h2><a href={prod.url}>{ prod.title }</a></h2> 
-                    <p> Price: <span className="price">{prod.price} </span> as seen on {prod.site}</p>
+                    <span> <span className="price">{prod.price} </span> on {prod.site}</span>
                     <img src={prod.image_url} />
-                    <button>Remove</button>
+                    <button onClick={this.removeProduct.bind(this, i)}>Remove</button>
                 </div>
             </li>
-        });
+        }.bind(this));
         return (<ul className="products"> {productList} </ul>)
     }
 });

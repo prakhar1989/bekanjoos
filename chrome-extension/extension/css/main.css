@@ -1,5 +1,6 @@
 body {
     width: 300px;
+    min-height: 400px;
     background: #F1F1F1;
     border: 10px solid white;
     margin:0;
@@ -80,6 +81,7 @@ ul.products li button {
     border-radius: 3px;
     padding: 5px 8px;
     cursor: pointer;
+    margin-top: 10px;
 }
 
 ul.products li button:hover {
@@ -88,7 +90,8 @@ ul.products li button:hover {
 }
 
 ul.products li img {
-    width: 50px;
+    max-height: 50px;
+    max-width: 50px;
     float: right;
     display: inline-block;
 }
