@@ -1,0 +1,16 @@
+body {
+    width: 300px;
+    height: 400px;
+    background: #F1F1F1;
+    border: 10px solid white;
+    margin:0;
+    padding:0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #922D50;
+}
+
+div#app {
+    padding: 10px;
+}

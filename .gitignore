@@ -1,0 +1,4 @@
+node_modules
+*.pyc
+*.swp
+DS_Store
