@@ -183,8 +183,10 @@ func main() {
 		price = getPriceForFlipkart(url)
 	} else if strings.Contains(website, "snapdeal") {
 		price = getPriceForSnapdeal(url)
-	}  else if strings.Contains(website, "amazon") {
+	} else if strings.Contains(website, "amazon") {
 		price = getPriceForAmazon(url)
+	} else if strings.Contains(website, "walmart") {
+		price = GetPriceForWalmart(url)
 	} else {
 		log.Fatal("Website not supported")
 	}
