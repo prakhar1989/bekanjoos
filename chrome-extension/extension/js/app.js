@@ -30,37 +30,16 @@ function getHostname(url) {
 var App = React.createClass({
     getInitialState() {
         return {
-            'validURL': false
+            validURL: false,
+            products: []
         }
     },
     componentDidMount() {
-        var self = this;
+        var validURL;
         getCurrentTabUrl(function(url) {
             var hostname = getHostname(url)
-            var isValid = VALID_SITES.indexOf(hostname) > -1;
-            self.setState({
-                validURL: isValid
-            });
+            validURL = VALID_SITES.indexOf(hostname) > -1;
         });
-    },
-    addProduct() {
-        alert("hello world");
-    },
-    render() {
-        return <div>
-            <h1>PriceTell</h1>
-            <span className="tagline">Helping you track your favorite online products</span>
-            { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> Track Product </button> : null }
-            <Products />
-        </div>
-    }
-});
-
-var Products = React.createClass({
-    getInitialState() {
-        return { products: [] }
-    },
-    componentDidMount() {
         request
             .get(URL + '/api/products')
             .end(function(err, res) {
@@ -68,11 +47,33 @@ var Products = React.createClass({
                 else {
                     if (this.isMounted()) {
                         this.setState({
-                            products: res.body.products
+                            products: res.body.products,
+                            validURL: validURL
                         })
                     }
                 }
             }.bind(this));
+    },
+    addProduct() {
+        var self = this;
+        chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+            console.log("sending message to content script");
+            chrome.tabs.sendMessage(tabs[0].id, {ACTION: "ADD_PRODUCT"}, function(response) {
+                var payload = response.payload;
+                if (payload) {
+                    // add product to the list and send a POST to the server
+                    request.post(URL + "/api/product").send(payload)
+                        .end(function(err, res) {
+                            if (err) console.log(err);
+                            else {
+                                self.setState({
+                                    products: [payload].concat(self.state.products)
+                                });
+                            }
+                        });
+                }
+            });
+        });
     },
     removeProduct(index) {
         var product = this.state.products[index];
@@ -84,10 +85,25 @@ var Products = React.createClass({
                     products: this.state.products.filter((_, i) => i !== index)
                 })
             }.bind(this));
-
     },
     render() {
-        var productList = this.state.products.map(function(prod, i) {
+        return <div>
+            <h1>PriceTell</h1>
+            <span className="tagline">Helping you track your favorite online products</span>
+            { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> Track Product </button> : null }
+            <Products 
+                products={this.state.products} 
+                handleRemoveProduct={this.removeProduct} />
+        </div>
+    }
+});
+
+var Products = React.createClass({
+    removeProduct(index) {
+        this.props.handleRemoveProduct(index);
+    },
+    render() {
+        var productList = this.props.products.map(function(prod, i) {
             return <li key={i}> 
                 <div className="info">
                     <h2><a href={prod.url}>{ prod.title }</a></h2> 

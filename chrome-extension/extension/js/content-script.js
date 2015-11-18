@@ -32,33 +32,52 @@ parseUri.options = {
 };
 
 
+function sendMessage(msg) {
+    chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
+      console.log(response);
+    });
+}
+
 /*
  * Main content script
  */
 function getDetailsForFlipkart() {
     var parsedURL = parseUri(document.location.href);
-    // check if it's a product page
+    // check if we're on a product page
     if (parsedURL["queryKey"]["pid"] !== undefined) {
         return {
             title: $('h1.title').text(),
-            image: $('img.productImage.current').attr('src'),
+            image_url: $('img.productImage.current').attr('src'),
+            site: "Flipkart",
+            url: document.location.href,
             price: $('span.selling-price').text(),
             product_id: parsedURL["queryKey"]["pid"]
         };
     }
 }
 
-$(document).on('ready', function() {
-    console.log("hello from content script");
-    var parsedURL = parseUri(document.location.href);
+function getProductDetails() {
     var details = null;
+    var parsedURL = parseUri(document.location.href);
     if (parsedURL.authority === "www.flipkart.com")  {
         details = getDetailsForFlipkart();
     }
-    if (details) {
-        console.log(JSON.stringify(details, null, 2));
-    } else {
-        console.log("Not a valid product page");
+    return details
+}
+
+// handle the message from extension
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        // check if the sender is the extension
+        if (!sender.tab && request.ACTION === "ADD_PRODUCT") {
+            var payload = getProductDetails();
+            console.log("Sending off details", JSON.stringify(payload, null, 2));
+            sendResponse({payload: payload});
+        }
     }
+);
+
+$(document).on('ready', function() {
+    console.log("Hello from TrackThis!");
 });
 
