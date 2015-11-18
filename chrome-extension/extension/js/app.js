@@ -30,25 +30,28 @@ function getHostname(url) {
 var App = React.createClass({
     getInitialState() {
         return {
-            'validURL': false,
-            'url': null
+            'validURL': false
         }
     },
     componentDidMount() {
         var self = this;
         getCurrentTabUrl(function(url) {
+            var hostname = getHostname(url)
+            var isValid = VALID_SITES.indexOf(hostname) > -1;
             self.setState({
-                url: url
+                validURL: isValid
             });
         });
     },
+    addProduct() {
+        alert("hello world");
+    },
     render() {
-        var hostname = getHostname(this.state.url)
-        var msg = VALID_SITES.indexOf(hostname) > -1 ? "Supported Website" : "Unsupported website";
 
         return (<div>
             <h1>PriceTell</h1>
-            <p>{msg}</p>
+            <span className="tagline">Helping you track your favorite online products</span>
+            { this.state.validURL ?  <button onClick={this.addProduct} className="add-product"> Track Product </button> : null }
             <Products />
         </div>
         )
@@ -57,7 +60,7 @@ var App = React.createClass({
 
 var Products = React.createClass({
     getInitialState() {
-        return { products: [{'title': 'chicken'}, {'title': 'mutton'}] }
+        return { products: [] }
     },
     componentDidMount() {
         request
@@ -75,7 +78,14 @@ var Products = React.createClass({
     },
     render() {
         var productList = this.state.products.map(function(prod, i) {
-            return <li key={i}> <p> { prod.title }</p> </li>
+            return <li key={i}> 
+                <div className="info">
+                    <h2><a href={prod.url}>{ prod.title }</a></h2> 
+                    <p> Price: <span className="price">{prod.price} </span> as seen on {prod.site}</p>
+                    <img src={prod.image_url} />
+                    <button>Remove</button>
+                </div>
+            </li>
         });
         return (<ul className="products"> {productList} </ul>)
     }

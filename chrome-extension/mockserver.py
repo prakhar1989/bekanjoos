@@ -10,11 +10,14 @@ def index():
 def getProducts():
     #print request.args.get('user_id')
     prod = {
-        'title': 'iPhone 6',
-        'price': 540.00,
-        'url': 'Joe Black Wayfarer Sunglasses'
+        'image_url': 'http://img6a.flixcart.com/image/sunglass/r/s/b/fa-1102-c1-farenheit-m-400x400-imae37gyr5q8fpwg.jpeg',
+        'price': "Rs. 540.00",
+        'site':  'Walmart',
+        'title': 'Joe Black Wayfarer Sunglasses',
+        'url': 'http://www.walmart.com/ip/Hanes-Girls-Crew-Socks-10-Pack/43989859'
+
     }
-    return jsonify({'products': [prod for _ in range(10)]})
+    return jsonify({'products': [prod for _ in range(6)]})
 
 @app.route('/api/product', methods=["DELETE"])
 def deleteProduct():
