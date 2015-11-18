@@ -6,6 +6,12 @@
 // call the packages we need
 var express = require('express');
 var app = express();
+var mongodb = require('mongodb');
+var MongoClient = mongodb.MongoClient;
+
+
+// Connection URL. This is where your mongodb server is running.
+var url = 'mongodb://localhost:27017/pricetell';
 
 var port = process.env.PORT || 8080;        // set our port
 
@@ -28,32 +34,31 @@ router.get('/', function(req, res) {
 });
 
 
-router.route('/:user_id')
+router.route('/products')
 
     // get all the products assigned to a user (accessed at GET http://localhost:8080/api/:user_id)
     .get(function(req, res) {
 
       res.json({ message: 'Get Request Called' });
 
+    })
+
+router.route('/product')
+    // add a product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
+    .post(function(req, res) {
+
+      res.json({ message: 'Post Request Called' });
+
+    })
+
+    // update the product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
+    .delete(function(req, res) {
+
+      res.json({ message: 'Delete Request Called' });
+
     });
 
 
-
-router.route('/:user_id/product')
-
-        // add a product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
-        .post(function(req, res) {
-
-          res.json({ message: 'Post Request Called' });
-
-        })
-
-        // update the product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
-        .put(function(req, res) {
-
-          res.json({ message: 'Put Request Called' });
-
-        });
 
 
 
