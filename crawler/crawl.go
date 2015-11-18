@@ -249,6 +249,8 @@ func main() {
 		price = getPriceForTarget(url)
 	} else if strings.Contains(website, "ebay") {
 		price = getPriceForEbay(url)
+	} else if strings.Contains(website, "walmart") {
+		price = GetPriceForWalmart(url)
 	} else {
 		log.Fatal("Website not supported")
 	}
