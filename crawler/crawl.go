@@ -161,6 +161,37 @@ func getPriceForAmazon(url string) float64 {
 	}
 }
 
+func getPriceForTarget(url string) float64 {
+	resp, err := http.Get(url)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+
+	z := html.NewTokenizer(resp.Body)
+	for {
+		tt := z.Next()
+		switch {
+		case tt == html.ErrorToken:
+			return 2.0
+		case tt == html.StartTagToken:
+			t := z.Token()
+			isSpan := t.Data == "span"
+			if isSpan {
+				for _, attr := range t.Attr {
+					if attr.Key == "class" && strings.Contains(attr.Val, "offerPrice") {
+						nxt := z.Next()
+						if nxt == html.TextToken {
+							t = z.Token()
+							return parseCurrency(t.Data)
+						}
+					}
+				}
+			}
+		}
+	}
+}
+
 func getWebsite(uri string) string {
 	u, err := url.Parse(uri)
 	if err != nil {
@@ -185,6 +216,8 @@ func main() {
 		price = getPriceForSnapdeal(url)
 	}  else if strings.Contains(website, "amazon") {
 		price = getPriceForAmazon(url)
+	} else if strings.Contains(website, "target") {
+		price = getPriceForTarget(url)
 	} else {
 		log.Fatal("Website not supported")
 	}
