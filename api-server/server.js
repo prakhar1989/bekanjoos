@@ -41,13 +41,14 @@ router.route('/:user_id')
 
 router.route('/:user_id/product')
 
-        // create a bear (accessed at POST http://localhost:8080/api/:user_id/product)
+        // add a product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
         .post(function(req, res) {
 
           res.json({ message: 'Post Request Called' });
 
         })
 
+        // update the product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
         .put(function(req, res) {
 
           res.json({ message: 'Put Request Called' });
