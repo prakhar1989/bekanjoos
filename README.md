@@ -1,9 +1,19 @@
-### Usage
+Crawler
+===
+
+### Run
 ```
-$ ./crawl <url>
+$ ./bin/crawl <url>
 ```
 
-### Supported Sites
-- Jabong
-- Flipkart
-- Snapdeal
+### Build
+```
+$ cd crawler 
+$ go run crawler.go walmart.go <url>
+```
+
+### Run Tests
+```
+$ cd crawler
+$ go test
+```
