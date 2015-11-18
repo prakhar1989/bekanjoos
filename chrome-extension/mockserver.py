@@ -8,7 +8,7 @@ def index():
 
 @app.route('/api/products')
 def getProducts():
-    print request.args.get('user_id')
+    #print request.args.get('user_id')
     prod = {
         'title': 'iPhone 6',
         'price': 540.00,

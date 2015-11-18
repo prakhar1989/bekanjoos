@@ -1,5 +1,6 @@
 var React = require('react');
 var ReactDOM = require('react-dom');
+var request = require('superagent');
 
 var VALID_SITES = ["www.snapdeal.com", "www.flipkart.com", "www.jabong.com", "www.walmart.com"];
 var URL = "http://localhost:5000"
@@ -33,7 +34,7 @@ var App = React.createClass({
             'url': null
         }
     },
-    componentWillMount() {
+    componentDidMount() {
         var self = this;
         getCurrentTabUrl(function(url) {
             self.setState({
@@ -48,9 +49,36 @@ var App = React.createClass({
         return (<div>
             <h1>PriceTell</h1>
             <p>{msg}</p>
+            <Products />
         </div>
         )
     }
-})
+});
+
+var Products = React.createClass({
+    getInitialState() {
+        return { products: [{'title': 'chicken'}, {'title': 'mutton'}] }
+    },
+    componentDidMount() {
+        request
+            .get(URL + '/api/products')
+            .end(function(err, res) {
+                if (err) console.log(err) 
+                else {
+                    if (this.isMounted()) {
+                        this.setState({
+                            products: res.body.products
+                        })
+                    }
+                }
+            }.bind(this));
+    },
+    render() {
+        var productList = this.state.products.map(function(prod, i) {
+            return <li key={i}> <p> { prod.title }</p> </li>
+        });
+        return (<ul className="products"> {productList} </ul>)
+    }
+});
 
 ReactDOM.render(<App />, document.getElementById('app'));
