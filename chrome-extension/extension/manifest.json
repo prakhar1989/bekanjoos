@@ -6,6 +6,10 @@
         "default_popup": "popup.html",
         "default_icon": "icon.png"
     },
+    "content_scripts": [{
+        "matches": ["http://www.flipkart.com/*", "http://localhost:5000/*"],
+        "js": ["lib/jquery-2.1.4.min.js", "js/content-script.js"]
+    }],
     "permissions": [ 
         "activeTab",
         "http://localhost:5000/"

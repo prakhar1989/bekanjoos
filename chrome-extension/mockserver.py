@@ -25,7 +25,7 @@ products = [getProduct() for _ in range(10)]
 
 @app.route('/')
 def index():
-    return "hello from flask"
+    return "<h1>hello from <a href='http://flask.pooco.org'>flask</a>"
 
 @app.route('/api/products')
 def getProducts():
