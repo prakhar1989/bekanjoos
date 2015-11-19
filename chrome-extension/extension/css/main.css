@@ -102,6 +102,7 @@ ul.products li img {
 
 ul.products span.price {
     font-weight: 800;
+    font-size: 14px;
     color: #539538
 }
 

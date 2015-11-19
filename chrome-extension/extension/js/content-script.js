@@ -3,7 +3,20 @@
 // MIT License
 
 function parseUri (str) {
-	var	o   = parseUri.options,
+    var options = {
+        strictMode: false,
+        key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
+        q:   {
+            name:   "queryKey",
+            parser: /(?:^|&)([^&=]*)=?([^&]*)/g
+        },
+        parser: {
+            strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
+            loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
+        }
+    };
+
+	var	o   = options,
 		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
 		uri = {},
 		i   = 14;
@@ -16,19 +29,6 @@ function parseUri (str) {
 	});
 
 	return uri;
-};
-
-parseUri.options = {
-	strictMode: false,
-	key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
-	q:   {
-		name:   "queryKey",
-		parser: /(?:^|&)([^&=]*)=?([^&]*)/g
-	},
-	parser: {
-		strict: /^(?:([^:\/?#]+):)?(?:\/\/((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?))?((((?:[^?#\/]*\/)*)([^?#]*))(?:\?([^#]*))?(?:#(.*))?)/,
-		loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
-	}
 };
 
 
@@ -75,7 +75,24 @@ function getDetailsForEbay() {
 
 function getDetailsForWalmart() {
     var parsedURL = parseUri(document.location.href);
-    return {
+    var subparts = parsedURL.path.split('/').filter(function(s) {
+        return s.length > 0; 
+    });
+    
+    if (subparts[0] === "ip") {
+        // stupid fucking DOM markup on Walmart >:-[
+        var priceDiv = $('div.js-price-display.price.price-display');
+        var leadingDigit = priceDiv.clone().children().remove().end().text().trim();
+        var curr = priceDiv.children().first().text();
+        var cents = priceDiv.children().last().text();
+        return {
+            title: $('h1.product-name.product-heading span').text().trim(),
+            price: curr + leadingDigit + "." + cents,
+            site: "Walmart",
+            url: document.location.href,
+            image_url: $('img.product-image.js-product-primary-image').attr('src'),
+            product_id: subparts[1]
+        }
     }
 }
 
@@ -86,6 +103,8 @@ function getProductDetails() {
         details = getDetailsForFlipkart();
     } else if (parsedURL.authority === "www.ebay.com") {
         details = getDetailsForEbay();
+    } else if (parsedURL.authority === "www.walmart.com") {
+        details = getDetailsForWalmart();
     }
     return details
 }
