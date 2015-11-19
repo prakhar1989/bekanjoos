@@ -42,6 +42,7 @@ function getDetailsForFlipkart() {
             product_id: parsedURL["queryKey"]["pid"]
         };
     }
+    return null;
 }
 
 function getDetailsForBestBuy() {
@@ -57,6 +58,7 @@ function getDetailsForBestBuy() {
             image_url: $('a.enlargeThumbnail img').attr('src')
         }
     }
+    return null;
 }
 
 function getDetailsForEbay() {
@@ -74,6 +76,7 @@ function getDetailsForEbay() {
             product_id: subparts[subparts.length - 1]
         };
     }
+    return null;
 }
 
 function getDetailsForWalmart() {
@@ -97,6 +100,7 @@ function getDetailsForWalmart() {
             product_id: subparts[1]
         }
     }
+    return null;
 }
 
 function getDetailsForTarget() {
@@ -114,6 +118,7 @@ function getDetailsForTarget() {
             product_id: subparts[subparts.length - 1]
         }
     }
+    return null;
 }
 
 function getDetailsForAmazon() {
@@ -151,7 +156,12 @@ function getProductDetails() {
     } else if (parsedURL.authority === "www.amazon.com") {
         details = getDetailsForAmazon();
     } 
-    return details
+    // validate details by ensuring all keys have a non-null value
+    if (details && details["title"] && details["product_id"] &&
+        details["image_url"] && details["price"]) {
+        return details
+    }
+    return null;
 }
 
 // handle the message from extension
