@@ -1,10 +1,20 @@
 body {
     width: 300px;
-    height: 400px;
+    min-height: 400px;
     background: #F1F1F1;
     border: 10px solid white;
     margin:0;
     padding:0;
+    font-family: Avenir, 'Lucida Grande', Tahoma, sans-serif;
+}
+
+p.error {
+    color: #C53839;
+    font-style: italic;
+}
+p.success {
+    color: #539538;
+    font-style: italic;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -14,3 +24,94 @@ h1, h2, h3, h4, h5, h6 {
 div#app {
     padding: 10px;
 }
+
+h1 { margin: 5px 0px; }
+
+span.tagline {
+    color: #a5a5a5;
+    font-style: italic;
+    font-size: 12px;
+    margin-bottom: 10px;
+    display: block
+}
+
+button.add-product {
+    cursor: pointer;
+    font-size: 14px;
+    border: 2px solid #539538;
+    color: white;
+    background: #93BD6A;
+    border-radius: 3px;
+    width: 100%;
+    padding: 10px 0;
+    text-transform: uppercase;
+}
+
+button.add-product:hover:enabled {
+    background: #539538;
+    color: white;
+}
+
+
+button.add-product:disabled {
+    border: 2px solid #eee;
+    color: white;
+    background: #eee;
+}
+
+ul.products {
+    list-style-type: none;
+    padding: 0;
+}
+
+ul.products li {
+    background: white;
+    margin: 10px 0;
+    padding: 5px 10px;
+    min-height: 100px;
+    border-radius: 2px;
+}
+
+div.info {
+    margin-bottom: 5px;
+}
+
+ul.products h2 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-top: 6px
+}
+ul.products h2 a {
+    text-decoration: none;
+    color: #334B81;
+}
+
+ul.products li button {
+    display: block;
+    border: 2px solid #C53839;
+    color: #C53839;
+    background: none;
+    border-radius: 3px;
+    padding: 5px 8px;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+ul.products li button:hover {
+    color: white;
+    background: #C53839;
+}
+
+ul.products li img {
+    max-height: 50px;
+    max-width: 50px;
+    float: right;
+    display: inline-block;
+}
+
+ul.products span.price {
+    font-weight: 800;
+    font-size: 14px;
+    color: #539538
+}
+
