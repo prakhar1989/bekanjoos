@@ -1,8 +1,7 @@
-// parseUri 1.2.2
-// (c) Steven Levithan <stevenlevithan.com>
-// MIT License
-
 function parseUri (str) {
+    // parseUri 1.2.2
+    // (c) Steven Levithan <stevenlevithan.com>
+    // MIT License
     var options = {
         strictMode: false,
         key: ["source","protocol","authority","userInfo","user","password","host","port","relative","path","directory","file","query","anchor"],
@@ -20,12 +19,10 @@ function parseUri (str) {
 		uri = {},
 		i   = 14;
 	while (i--) uri[o.key[i]] = m[i] || "";
-
 	uri[o.q.name] = {};
 	uri[o.key[12]].replace(o.q.parser, function ($0, $1, $2) {
 		if ($1) uri[o.q.name][$1] = $2;
 	});
-
 	return uri;
 };
 
@@ -122,9 +119,27 @@ function getDetailsForTarget() {
             price: $('span.offerPrice').text(),
             site: 'Target',
             product_id: subparts[subparts.length - 1]
-
         }
     }
+}
+
+function getDetailsForAmazon() {
+    var parsedURL = parseUri(document.location.href);
+    var subparts = parsedURL.path.split('/').filter(function(k) { 
+        return k.length > 0; 
+    });
+    if (subparts.indexOf("dp") > -1 || subparts.indexOf("gp") > -1) {
+        return {
+            title: jQuery('h1#title span').text(),
+            image_url: jQuery('img#landingImage').attr('src'),
+            url: document.location.href,
+            site: 'Amazon',
+            price: jQuery('span#priceblock_ourprice').text() || 
+                   jQuery('span#priceblock_dealprice').text(),
+            product_id: subparts[2]
+        }
+    }
+    return null;
 }
 
 function getProductDetails() {
@@ -140,7 +155,9 @@ function getProductDetails() {
         details = getDetailsForTarget();
     } else if (parsedURL.authority === "www.bestbuy.com") {
         details = getDetailsForBestBuy();
-    }
+    } else if (parsedURL.authority === "www.amazon.com") {
+        details = getDetailsForAmazon();
+    } 
     return details
 }
 
@@ -159,4 +176,3 @@ chrome.runtime.onMessage.addListener(
 $(document).on('ready', function() {
     console.log("Hello from TrackThis!");
 });
-
