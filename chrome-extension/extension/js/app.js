@@ -2,8 +2,9 @@ var React = require('react');
 var ReactDOM = require('react-dom');
 var request = require('superagent');
 
-var VALID_SITES = ["www.snapdeal.com", "www.flipkart.com", "www.jabong.com", "www.walmart.com"];
-var URL = "http://localhost:5000"
+var VALID_SITES = ["www.ebay.com", "www.flipkart.com", "www.walmart.com", 
+                   "www.target.com", "www.bestbuy.com", "www.amazon.com"];
+var URL = "http://localhost:5000";
 
 // get the current tab URl
 function getCurrentTabUrl(callback) {
@@ -19,7 +20,6 @@ function getCurrentTabUrl(callback) {
         callback(url);
     });
 }
-
 
 function getHostname(url) {
     var parser = document.createElement("a");
@@ -39,6 +39,7 @@ var App = React.createClass({
         getCurrentTabUrl(function(url) {
             var hostname = getHostname(url)
             validURL = VALID_SITES.indexOf(hostname) > -1;
+            console.log("valid url", validURL);
         });
         request
             .get(URL + '/api/products')

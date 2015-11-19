@@ -50,9 +50,32 @@ function getDetailsForFlipkart() {
             image_url: $('img.productImage.current').attr('src'),
             site: "Flipkart",
             url: document.location.href,
-            price: $('span.selling-price').text(),
+            price: $('span.selling-price.omniture-field').text(),
             product_id: parsedURL["queryKey"]["pid"]
         };
+    }
+}
+
+function getDetailsForEbay() {
+    var parsedURL = parseUri(document.location.href);
+    var subparts = parsedURL.path.split('/');
+    var price = $('span#prcIsum').text();
+
+    if (subparts[1] === "itm") {
+        return {
+            title: $('h1#itemTitle').children().remove().end().text(),
+            image_url: $('img#icImg').attr('src'),
+            site: 'Ebay',
+            url: document.location.href,
+            price: price.split(' ')[1],
+            product_id: subparts[subparts.length - 1]
+        };
+    }
+}
+
+function getDetailsForWalmart() {
+    var parsedURL = parseUri(document.location.href);
+    return {
     }
 }
 
@@ -61,6 +84,8 @@ function getProductDetails() {
     var parsedURL = parseUri(document.location.href);
     if (parsedURL.authority === "www.flipkart.com")  {
         details = getDetailsForFlipkart();
+    } else if (parsedURL.authority === "www.ebay.com") {
+        details = getDetailsForEbay();
     }
     return details
 }
