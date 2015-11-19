@@ -31,7 +31,8 @@ var App = React.createClass({
     getInitialState() {
         return {
             validURL: false,
-            products: []
+            products: [],
+            flashMsg: null
         }
     },
     componentDidMount() {
@@ -72,6 +73,13 @@ var App = React.createClass({
                                 });
                             }
                         });
+                } else {
+                    self.setState({
+                        flashMsg: {
+                            status: 'error',
+                            text: "Unable to add the product. Are you sure you are on a product page?"
+                        }
+                    });
                 }
             });
         });
@@ -88,10 +96,14 @@ var App = React.createClass({
             }.bind(this));
     },
     render() {
+        var flashMsg = this.state.flashMsg;
         return <div>
-            <h1>PriceTell</h1>
+            <h1>PriceTell <i className="ion-arrow-graph-up-right"></i></h1>
             <span className="tagline">Helping you track your favorite online products</span>
-            { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> Track Product </button> : null }
+            { flashMsg ? <p className={flashMsg.status}> { flashMsg.text } </p> : null }
+            { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> 
+                Track Product <i className="ion-plus-circled"></i></button> : null 
+            }
             <Products 
                 products={this.state.products} 
                 handleRemoveProduct={this.removeProduct} />
@@ -108,9 +120,12 @@ var Products = React.createClass({
             return <li key={i}> 
                 <div className="info">
                     <h2><a href={prod.url}>{ prod.title }</a></h2> 
-                    <span> <span className="price">{prod.price} </span> on {prod.site}</span>
+                    <span> 
+                        <span className="price">{prod.price} </span> 
+                        on {prod.site} <i className="ion-information-circled"></i>
+                    </span>
                     <img src={prod.image_url} />
-                    <button onClick={this.removeProduct.bind(this, i)}>Remove</button>
+                    <button onClick={this.removeProduct.bind(this, i)}>Remove <i className="ion-close-circled"></i></button>
                 </div>
             </li>
         }.bind(this));
