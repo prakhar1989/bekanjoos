@@ -96,6 +96,24 @@ function getDetailsForWalmart() {
     }
 }
 
+function getDetailsForTarget() {
+    var parsedURL = parseUri(document.location.href);
+    var subparts = parsedURL.path.split('/').filter(function(s) {
+        return s.length > 0;
+    });
+    if (subparts[0] === "p") {
+        return {
+            title: $('h2.product-name.item').text().trim(),
+            image_url: $('img#heroImage').attr('src'),
+            url: document.location.href,
+            price: $('span.offerPrice').text(),
+            site: 'Target',
+            product_id: subparts[subparts.length - 1]
+
+        }
+    }
+}
+
 function getProductDetails() {
     var details = null;
     var parsedURL = parseUri(document.location.href);
@@ -105,6 +123,8 @@ function getProductDetails() {
         details = getDetailsForEbay();
     } else if (parsedURL.authority === "www.walmart.com") {
         details = getDetailsForWalmart();
+    } else if (parsedURL.authority === "www.target.com") {
+        details = getDetailsForTarget();
     }
     return details
 }
