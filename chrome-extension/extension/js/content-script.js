@@ -15,12 +15,10 @@ function parseUri (str) {
             loose:  /^(?:(?![^:@]+:[^:@\/]*@)([^:\/?#.]+):)?(?:\/\/)?((?:(([^:@]*)(?::([^:@]*))?)?@)?([^:\/?#]*)(?::(\d*))?)(((\/(?:[^?#](?![^?#\/]*\.[^?#\/.]+(?:[?#]|$)))*\/?)?([^?#\/]*))(?:\?([^#]*))?(?:#(.*))?)/
         }
     };
-
 	var	o   = options,
 		m   = o.parser[o.strictMode ? "strict" : "loose"].exec(str),
 		uri = {},
 		i   = 14;
-
 	while (i--) uri[o.key[i]] = m[i] || "";
 
 	uri[o.q.name] = {};
@@ -53,6 +51,21 @@ function getDetailsForFlipkart() {
             price: $('span.selling-price.omniture-field').text(),
             product_id: parsedURL["queryKey"]["pid"]
         };
+    }
+}
+
+function getDetailsForBestBuy() {
+    var parsedURL = parseUri(document.location.href);
+    var subparts = parsedURL.file.split('.');
+    if (subparts[subparts.length - 1] === "p") {
+        return {
+            title: $('div#sku-title h1').text(),
+            url: document.location.href,
+            site: 'BestBuy',
+            price: $('div.item-price').text().trim(),
+            product_id: parsedURL["queryKey"]["skuId"],
+            image_url: $('a.enlargeThumbnail img').attr('src')
+        }
     }
 }
 
@@ -125,6 +138,8 @@ function getProductDetails() {
         details = getDetailsForWalmart();
     } else if (parsedURL.authority === "www.target.com") {
         details = getDetailsForTarget();
+    } else if (parsedURL.authority === "www.bestbuy.com") {
+        details = getDetailsForBestBuy();
     }
     return details
 }
