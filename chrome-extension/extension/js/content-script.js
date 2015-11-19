@@ -26,13 +26,6 @@ function parseUri (str) {
 	return uri;
 };
 
-
-function sendMessage(msg) {
-    chrome.runtime.sendMessage({greeting: "hello"}, function(response) {
-      console.log(response);
-    });
-}
-
 /*
  * Main content script
  */

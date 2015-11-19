@@ -69,7 +69,11 @@ var App = React.createClass({
                             if (err) console.log(err);
                             else {
                                 self.setState({
-                                    products: [payload].concat(self.state.products)
+                                    products: [payload].concat(self.state.products),
+                                    flashMsg: {
+                                        status: 'success',
+                                        text: "Product successfully added to your tracking list"
+                                    }
                                 });
                             }
                         });
@@ -100,7 +104,7 @@ var App = React.createClass({
         return <div>
             <h1>PriceTell <i className="ion-arrow-graph-up-right"></i></h1>
             <span className="tagline">Helping you track your favorite online products</span>
-            { flashMsg ? <p className={flashMsg.status}> { flashMsg.text } </p> : null }
+            { flashMsg ? <FlashMsg status={flashMsg.status} msg={flashMsg.text} /> : null }
             { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> 
                 Track Product <i className="ion-plus-circled"></i></button> : null 
             }
@@ -108,6 +112,20 @@ var App = React.createClass({
                 products={this.state.products} 
                 handleRemoveProduct={this.removeProduct} />
         </div>
+    }
+});
+
+var FlashMsg = React.createClass({
+    propTypes: {
+        msg: React.PropTypes.String,
+        status: React.PropTypes.String
+    },
+    render() {
+        var {msg, status} = this.props;
+        var error = status === "error";
+        var icon = error ?  <i className="ion-alert-circled"></i> : <i className="ion-checkmark"></i>;
+        var cls = error ? "error animated shake" : "success animated tada";
+        return <p className={cls}> {icon} { msg } </p>
     }
 });
 
