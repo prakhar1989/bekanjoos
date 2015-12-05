@@ -1,0 +1,49 @@
+/* header -------------------------- */
+header {
+    padding: 104px 0;
+    background: url(../images/header.jpg) no-repeat 50% 50%;
+    font: 24px/36px $fontCaption;
+    color: $white;
+    @include bgsize;
+    @include sizing;
+    h1 {
+        font-size: 60px;
+        line-height: 60px;
+        font-weight: $f-medium;
+        margin-bottom: 38px;
+        span {
+            font-weight: $f-extra-light;
+        }
+    }
+    .autor {
+        padding: 12px 0 0;
+        font-size: 14px;
+        line-height: 24px;
+        font-weight: bold;
+        color: $white;
+        a {
+            color: $white;
+            &:hover {
+                color: $white;
+                @include opacity(0.8);
+            }
+            &:active {
+                color: $white;
+                @include opacity(1);
+            }
+        }
+    }
+    .buttons-wrapper {
+        padding-top: 53px;
+        .button-stripe {
+            margin-left: 14px;
+        }
+    }
+}
+.header-img {
+    float: right;
+}
+.header-wrapper {
+    padding-top: 87px;
+    max-width: 655px
+}

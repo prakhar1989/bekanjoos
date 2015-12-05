@@ -1,0 +1,124 @@
+/* common -------------------------- */
+%sprite {
+    background: url(../images/sprite.png) 0 0 no-repeat;
+}
+html {
+    height: 100%;
+    background: $white;
+}
+body {
+    height: 100%;
+    font: #{$fontSize}/#{$lineHeight} $fontFamily;
+    color: $text;
+    -webkit-font-smoothing: antialiased;
+    -webkit-backface-visibility: hidden;
+    -ms-text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+}
+.main {
+    min-height: 100%;
+    overflow: hidden;
+    @include sizing;
+}
+.wrap {
+    margin: 0 auto;
+    padding: 0 15px;
+    max-width: $wrap;
+}
+a {
+    color: $link;
+    cursor: pointer;
+    background: transparent;
+    text-decoration: none;
+    &:hover {
+        color: $linkHover;
+    }
+    &:active {
+        color: $linkActive;
+    }
+}
+.error {
+    color: $red !important;
+    border-color: $red !important;
+}
+.success {
+    color: $green !important;
+    border-color: $green !important;
+}
+.disabled {
+    color: $gray !important;
+    border-color: $gray !important;
+    cursor: default !important;
+}
+.input-text,
+.textarea {
+    width: 100%;
+    float: left;
+    border: 2px solid #d8d8d8;
+    background: $white;
+    height: 58px;
+    padding: 10px 21px;
+    font: $f-medium 17px/34px $fontCaption;
+    @include transition(#{color 0.1s linear, background-color 0.1s linear, border-color 0.1s linear});
+    @include border-radius(5px);
+    @include sizing;
+    &:focus {
+        border-color: #aeaeae;
+    }
+}
+.textarea {
+    font-family: $fontFamily;
+}
+.button {
+    color: $white;
+    background: $link;
+    height: 58px;
+    border: 2px solid $link;
+    font: $f-medium 22px $fontCaption;
+    padding: 0 21px;
+    @include transition(#{color 0.1s linear, background-color 0.1s linear, border-color 0.1s linear});
+    @include border-radius(5px);
+    @include sizing;
+    &:hover {
+        background: $linkHover;
+        border-color: $linkHover;
+    }
+    &:active {
+        background: $linkActive;
+        border-color: $linkActive;
+    }
+}
+a.button {
+    text-decoration: none;
+    display: inline-block;
+    line-height: 54px;
+    color: $white;
+    &:hover {
+        color: $white;
+    }
+    &:active {
+        color: $white;
+    }
+    &.button-stripe {
+        background-color: rgba(0,0,0,0.2);
+        border-color: $white;
+        &:hover {
+            color: $text;
+            background-color: $white;
+            border-color: $white;
+        }
+        &:active {
+            color: $text;
+            background-color: #e5e5e5;
+            border-color: #e5e5e5;
+        }
+    }
+}
+
+@include placeholder {
+    color: lighten($gray, 20%);
+}
+
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}

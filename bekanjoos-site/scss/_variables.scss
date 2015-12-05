@@ -1,0 +1,31 @@
+$wrap: 1140px;
+
+$fontSize: 16px;
+$lineHeight: 28px;
+$fontFamily: "Helvetica Neue", Helvetica, Arial, sans-serif;
+$fontCaption: 'Raleway', $fontFamily;
+
+$primary: #000000;
+$secondary: #000000;
+$text: #222222;
+
+$link: #10bbf1;
+$linkHover: lighten($link, 10%);
+$linkActive: darken($link, 10%);
+
+$white: #ffffff;
+$black: #000000;
+$gray: #999999;
+$green: #00cc00;
+$red: #ff0000;
+$darkblue: #324a57;
+
+$f-thin: 100;
+$f-extra-light: 200;
+$f-light: 300;
+$f-normal: 400;
+$f-medium: 500;
+$f-demi-bold: 600;
+$f-bold: 700;
+$f-heavy: 800;
+$f-black: 900;

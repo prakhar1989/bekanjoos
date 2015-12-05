@@ -1,0 +1,82 @@
+@mixin font($fontsize, $lineheight, $fontsizeDefault: 16) {
+    font-size: ($fontsize*100%/$fontsizeDefault);
+    line-height: ($lineheight/$fontsize);
+}
+@mixin sizing($boxsizing: border-box) {
+    -moz-box-sizing: $boxsizing;
+    -webkit-box-sizing: $boxsizing;
+    box-sizing: $boxsizing;
+}
+@mixin size($width: auto, $height: auto) {
+    width: $width;
+    height: $height;
+}
+@mixin border-radius($radius: 5px) {
+    -moz-border-radius: $radius;
+    -webkit-border-radius: $radius;
+    border-radius: $radius;
+}
+@mixin box-shadow($shadow) {
+    -moz-box-shadow: $shadow;
+    -webkit-box-shadow: $shadow;
+    box-shadow: $shadow;
+}
+@mixin gradient($gradient-from, $gradient-to) {
+    background-color: $gradient-from;
+    background-image: -webkit-gradient(linear, left top, left bottom, from($gradient-from), to($gradient-to));
+    background-image: -webkit-linear-gradient(top, $gradient-from, $gradient-to);
+    background-image: -moz-linear-gradient(top, $gradient-from, $gradient-to);
+    background-image: -ms-linear-gradient(top, $gradient-from, $gradient-to);
+    background-image: -o-linear-gradient(top, $gradient-from, $gradient-to);
+    background-image: linear-gradient(to bottom, $gradient-from, $gradient-to);
+}
+@mixin transition($string) {
+    -moz-transition: $string;
+    -ms-transition: $string;
+    -o-transition: $string;
+    -webkit-transition: $string;
+    transition: $string;
+}
+@mixin opacity($opacity) {
+  opacity: $opacity;
+  $opacity-ie: $opacity * 100;
+  filter: alpha(opacity=$opacity-ie); //IE8
+}
+@mixin bgsize($string: cover) {
+    -moz-background-size: $string;
+    -webkit-background-size: $string;
+    -o-background-size: $string;
+    background-size: $string;
+}
+@mixin rotate($deg) {
+    -moz-transform: rotate($deg);
+    -ms-transform: rotate($deg);
+    -o-transform: rotate($deg);
+    -webkit-transform: rotate($deg);
+    transform: rotate($deg);
+}
+@mixin hyphens($mode: auto) {
+    word-wrap: break-word;
+    -webkit-hyphens: $mode;
+    -moz-hyphens: $mode;
+    -ms-hyphens: $mode;
+    -o-hyphens: $mode;
+    hyphens: $mode;
+}
+@mixin user-select($val) {
+    -webkit-touch-callout: $val;
+    -webkit-user-select: $val;
+    -khtml-user-select: $val;
+    -moz-user-select: $val;
+    -ms-user-select: $val;
+    user-select: $val;
+}
+@mixin stretchy($width) {
+    width: $width/$wrap*100%;
+}
+@mixin placeholder {
+  ::-webkit-input-placeholder {@content}
+  :-moz-placeholder           {@content}
+  ::-moz-placeholder          {@content}
+  :-ms-input-placeholder      {@content}  
+}

@@ -1,0 +1,156 @@
+/* media -------------------------- */
+/* Responsive all mobile sizes */
+@media (max-width: 979px) {
+    .newsletter-form {
+        min-width: 0;
+    }
+    .newsletter-title {
+        font-size: 36px;
+        line-height: 48px;
+    }
+    .header-img {
+        display: none;
+    }
+    .header-wrapper {
+        padding-top: 0;
+        max-width: none;
+    }
+    header {
+        text-align: center;
+        font-size: 19px;
+        line-height: 28px;
+        h1 {
+            font-size: 46px;
+            line-height: 52px;
+        }
+        .buttons-wrapper {
+            .button {
+                margin-bottom: 20px;
+            }
+        }
+    }
+    .promo-column {
+        width: auto;
+        max-width: 290px;
+        margin-left: auto;
+        margin-right: auto;
+        float: none;
+        text-align: center;
+        img {
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    .simple-content {
+        float: none;
+        width: auto;
+        padding-top: 0;
+        h3 {
+            font-size: 36px;
+            line-height: 46px;
+            text-align: center;
+        }
+        ul {
+            max-width: 310px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    }
+    .simple-img {
+        float: none;
+        width: auto;
+        max-width: none;
+        margin-left: -80px;
+        margin-right: -80px;
+    }
+    .comments {
+        .box {
+            padding-left: 0;
+            padding-right: 0;
+        }
+        .tab-prev,
+        .tab-next {
+            display: none;
+        }
+    }
+    .social-list {
+        li {
+            float: none;
+            text-align: center;
+            padding-top: 20px;
+            &:first-child {
+                padding-top: 0;
+            }
+            a {
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+    }
+    .video-title {
+        font-size: 36px;
+        line-height: 46px;
+    }
+    .discover-content {
+        float: none;
+        width: auto;
+        padding-left: 0;
+        padding-right: 0;
+        text-align: center;
+        h2 {
+            font-size: 60px;
+            line-height: 60px;
+        }
+    }
+    .discover-img {
+        float: none;
+        width: auto;
+        img {
+            margin: 0 auto;
+        }
+    }
+    .discover-button {
+        text-align: center;
+        .button-download {
+            float: none;
+            display: inline-block;
+        }
+    }
+    .comments .tabs li {
+        width: 18px;
+        height: 18px;
+        margin: 0 14px;
+    }
+}
+/* Responsive just mobile portrait */
+@media (max-width: 479px) {
+    header {
+        .buttons-wrapper {
+            .button {
+                &.button-stripe {
+                    margin-left: 0;
+                }
+            }
+        }
+    }
+    .discover-content {
+        h2 {
+            font-size: 36px;
+            line-height: 46px;
+        }
+    }
+}
+@media only screen and (-webkit-min-device-pixel-ratio:2),
+only screen and (min--moz-device-pixel-ratio:2),
+only screen and (-o-min-device-pixel-ratio:2/1),
+only screen and (min-device-pixel-ratio:2),
+only screen and (min-resolution:192dpi),
+only screen and (min-resolution:2dppx){
+    %sprite,
+    .comments .tab-prev,
+    .comments .tab-next,
+    .button-download:after {
+      background: url(../images/sprite@2x.png) 0 0 no-repeat;
+      @include bgsize(#{200px 50px});
+    }
+}
