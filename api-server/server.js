@@ -8,6 +8,7 @@ var express = require('express');
 var app = express();
 var mongodb = require('mongodb');
 var MongoClient = mongodb.MongoClient;
+//var db;
 
 
 // Connection URL. This is where your mongodb server is running.
@@ -19,6 +20,24 @@ var port = process.env.PORT || 8080;        // set our port
 // =============================================================================
 var router = express.Router();              // get an instance of the express Router
 
+
+
+// Use connect method to connect to the Server
+  /*MongoClient.connect(url, function (err, db) {
+    if (err) {
+      console.log('Unable to connect to the mongoDB server. Error:', err);
+    } else {
+      //HURRAY!! We are connected. :)
+      console.log('Connection established to', url);
+      //this.db = db;
+
+      // do some work here with the database.
+
+      //Close connection
+      //db.close();
+  }
+
+});*/
 
 // middleware to use for all requests
 router.use(function(req, res, next) {
@@ -40,6 +59,22 @@ router.route('/products')
     .get(function(req, res) {
 
       res.json({ message: 'Get Request Called' });
+        MongoClient.connect(url, function (err, db) {
+          if (err) {
+            console.log('Unable to connect to the mongoDB server. Error:', err);
+          }
+          else{
+      var cursor = db.collection('users').find( );
+      cursor.each(function(err, doc) {
+      //  assert.equal(err, null);
+        if (doc != null) {
+         console.log(doc);
+        } else {
+         //callback();
+        }
+     });
+   }
+   });
 
     })
 
