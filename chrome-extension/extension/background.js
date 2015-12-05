@@ -25,7 +25,9 @@ function onFacebookLogin() {
                     localStorage.expiryTime = expiryTime;
                     
                 }
-                chrome.tabs.remove(tabs[i].id);
+                chrome.tabs.remove(tabs[i].id, function() {
+                    chrome.tabs.create({url: chrome.extension.getURL('firsttime.html')});
+                });
             }
         }
     });
