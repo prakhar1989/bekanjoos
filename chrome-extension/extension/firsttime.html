@@ -3,6 +3,7 @@
   <head>
     <meta charset="utf-8">
     <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+    <script src="lib/jquery-2.1.4.min.js"></script>
     <style type="text/css">
       body {
         background: #F1F1F1;
@@ -73,12 +74,19 @@
         -moz-animation: bounce 2s infinite;
         -webkit-animation: bounce 2s infinite;
         animation: bounce 2s infinite;
-}
+      }
+      div.welcome {
+        padding: 20px;
+      }
     </style>
   <body>
+    <div class="welcome">
+        <h1 id="msg"></h1>
+    </div>
     <div id="banner">
       <i class="ion-arrow-up-a bounce"></i>
       <h1>You are now logged in to BeKanjoos!</h1>
     </div>
+    <script src="js/hellouser.js"></script>
   </body>
 </html>
