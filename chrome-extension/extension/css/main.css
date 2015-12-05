@@ -35,7 +35,7 @@ span.tagline {
     display: block
 }
 
-button.add-product {
+button.add-product, button.login-btn {
     cursor: pointer;
     font-size: 14px;
     border: 2px solid #539538;
@@ -45,6 +45,19 @@ button.add-product {
     width: 100%;
     padding: 10px 0;
     text-transform: uppercase;
+}
+
+button.login-btn {
+    margin-top: 100px;
+    background: url('http://i.stack.imgur.com/SoLOz.png');
+    background-size: 215px 55px;
+    background-repeat: no-repeat;
+    color: #5A77B2;
+    margin-left: 32px;
+    width: 220px;
+    height: 61px;
+    border: 0;
+    cursor: pointer;
 }
 
 button.add-product:hover:enabled {

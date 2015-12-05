@@ -27,6 +27,21 @@ function getHostname(url) {
     return parser.hostname;
 }
 
+function isLoggedIn() {
+    var accessToken = localStorage.accessToken;
+    var expiry = new Date(parseInt(localStorage.expiryTime));
+    var now = new Date();
+    return accessToken && now < expiry;
+}
+
+function logoutUser() {
+    localStorage.accessToken = null;
+    localStorage.id = null;
+    localStorage.email = null;
+    localStorage.name = null;
+    localStorage.expiryTime = null;
+}
+
 var App = React.createClass({
     getInitialState() {
         return {
@@ -99,8 +114,20 @@ var App = React.createClass({
                 })
             }.bind(this));
     },
+    handleLogin() {
+        var redirect_url = "https://www.facebook.com/connect/login_success.html";
+        var url = "https://www.facebook.com/dialog/oauth?client_id=1643610532594445&"
+                            + "redirect_uri=" + redirect_url
+                            + "&scope=email&response_type=token";
+        chrome.tabs.create({url: url, selected: true});
+    },
     render() {
         var flashMsg = this.state.flashMsg;
+        if (!isLoggedIn()) {
+            return <div>
+                <button onClick={this.handleLogin} className="login-btn"></button>
+            </div>
+        }
         return <div>
             <h1>PriceTell <i className="ion-arrow-graph-up-right"></i></h1>
             <span className="tagline">Helping you track your favorite online products</span>
