@@ -12,6 +12,7 @@
     "fs": "0.0.2",
     "http": "0.0.0",
     "jade": "~1.9.2",
+    "mysql": "^2.9.0",
     "serve-favicon": "~2.2.1",
     "wget-improved": "^1.2.1"
   }

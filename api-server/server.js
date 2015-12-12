@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 var http = require('http');
 var AWS = require('aws-sdk');
 var s3Writer = require('./s3.js');
-
+var db = require('./db.js');
 
 // Connection URL for RDS instance
 var url = 'RDS URL';
@@ -64,14 +64,16 @@ router.route('/product')
       var title = req.body.title;
       var url = req.body.url;
       var site = req.body.site;
-      var price = req.body.price;
+      var price = parseInt(req.body.price);
       var product_id = req.body.product_id;
+      console.log(typeof(product_id));
       var image_url = req.body.image_url;
       console.log();
       s3Writer.storeInS3(image_url, function(publicUrl) {
         var s3PublicUrl = publicUrl;
         console.log(s3PublicUrl);
-
+        db.establishConnection();
+        db.registerUserProduct(6467090862, site, product_id, title, s3PublicUrl, price);
       });
       res.json({message: 'Got a request'});
     })
