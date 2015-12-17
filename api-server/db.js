@@ -70,12 +70,12 @@ exports.doesProductExist = function (productSite, productId, callback) {
 
 exports.addProduct = function (productSite, productId, productTitle, productImage, productPrice, productCurr, productUrl, callback) {
     var product = {
-        site: productSite, 
-        pid: productId, 
-        title: productTitle, 
-        image: productImage, 
-        price: productPrice, 
-        currency: productCurr, 
+        site: productSite,
+        pid: productId,
+        title: productTitle,
+        image: productImage,
+        price: productPrice,
+        currency: productCurr,
         url: productUrl
     };
     con.query('INSERT INTO product SET?', product, function(err,res){
@@ -186,8 +186,8 @@ exports.findUserDetails = function (facebookid, callback){
 
 
 exports.findUserProducts = function (facebookid, callback){
-    var query = "select u.site, u.pid, p.title, p.image as image_url from " + 
-    "userProducts as u, product as p where p.pid = u.pid and " + 
+    var query = "select u.site, u.pid, p.title, p.image as image_url, CONCAT(p.currency, p.price) as price from " +
+    "userProducts as u, product as p where p.pid = u.pid and " +
     "u.fbid = '" + facebookid + "' order by u.created_at desc";
 
     con.query(query, function(err,res){
@@ -212,6 +212,17 @@ exports.findProductUrls = function (callback){
         callback(res);
       }
     });
+};
+
+exports.getUserProducts = function(callback) {
+  con.query("select fbid, GROUP_CONCAT(pid SEPARATOR ',') as trackedProducts from userProducts group by fbid", function(err, res) {
+    if (err) {
+      console.log(err);
+    }
+    else {
+      callback(res);
+    }
+  });
 };
 
 exports.disconnect = function (){
