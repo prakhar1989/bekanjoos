@@ -28,16 +28,8 @@ router.get('/', function(req, res) {
     res.json({message: 'hooray! welcome to our api!'});
 });
 
-
-router.route('user/:fbid/products')
-  // get all the products assigned to a user (accessed at GET http://localhost:8080/api/:user_id)
-  .get(function(req, res) {
-    var fbid = req.params.fbid;
-    //db.findUserProducts(fbid, function()
-  })
-
 // add a new user with FB ID, or check existing user
-router.route('/login')
+router.route('/register')
   .post(function(req, res) {
       var fbid = req.body.fbid;
       var email = req.body.email;
@@ -46,60 +38,81 @@ router.route('/login')
       res.send();
   })
 
-router.route('/user/:fbid/product')
-    // when a user wants to track a new product
-    .post(function(req, res) {
-      var fbid = req.params.fbid;
-      var title = req.body.title;
-      var url = req.body.url;
-      var site = req.body.site;
-      var price = parseInt(req.body.price);
-      var product_id = req.body.product_id;
-      db.doesProductExist(site, product_id, function(productExists) {
-        if (!productExists) {
-          var image_url = req.body.image_url;
-          s3Writer.storeInS3(image_url, function(s3publicUrl) {
-            db.addProduct(site, product_id, title, s3publicUrl, price, function(productAdded) {
-              if (productAdded) {
-                db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
-                  if (dbResponse == 'exists')
-                    // can set status numbers to condition on based on client side requirements
-                    res.json({message: "You're already tracking this product"});
-                  if (dbResponse == 'added')
-                    res.json({message: "You are now tracking this product"});
-                });
-              }
-            });
-          });
-        }
-        else {
-          db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
-            if (dbResponse == 'exists')
-              // can set status numbers to condition on based on client side requirements
-              res.json({message: "You're already tracking this product"});
-            if (dbResponse == 'added')
-              res.json({message: "You are now tracking this product"});
-          });
-        }
-      });
-    })
-
-    // user wants to delete a product from his list
-    .delete(function(req, res) {
-      var fbid = req.params.fbid;
-      var site = req.body.site;
-      var product_id = req.body.product_id;
-      db.unTrackProduct(fbid, site, product_id, function(productDeleted) {
-        if (productDeleted) {
-          res.json({message: "Product Removed"});
-        }
-      });
-
+router.route('user/:fbid/products')
+  // get all the products assigned to a user (accessed at GET http://localhost:8080/api/:user_id)
+  .get(function(req, res) {
+    var fbid = req.params.fbid;
+    //db.findUserProducts(fbid, function()
+    db.findUserProducts(fbid, function(allProducts) {
+      res.send(allProducts);
     });
+  })
+
+router.route('/user/:fbid/product')
+  // when a user wants to track a new product
+  .post(function(req, res) {
+    var fbid = req.params.fbid;
+    var title = req.body.title;
+    var url = req.body.url;
+    var site = req.body.site;
+    var price = parseInt(req.body.price);
+    var product_id = req.body.product_id;
+    db.doesProductExist(site, product_id, function(productExists) {
+      if (!productExists) {
+        var image_url = req.body.image_url;
+        s3Writer.storeInS3(image_url, function(s3publicUrl) {
+          db.addProduct(site, product_id, title, s3publicUrl, price, function(productAdded) {
+            if (productAdded) {
+              db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
+                if (dbResponse == 'exists')
+                  // can set status numbers to condition on based on client side requirements
+                  res.json({message: "You're already tracking this product"});
+                if (dbResponse == 'added')
+                  res.json({message: "You are now tracking this product"});
+              });
+            }
+          });
+        });
+      }
+      else {
+        db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
+          if (dbResponse == 'exists')
+            // can set status numbers to condition on based on client side requirements
+            res.json({message: "You're already tracking this product"});
+          if (dbResponse == 'added')
+            res.json({message: "You are now tracking this product"});
+        });
+      }
+    });
+  })
+
+  // user wants to delete a product from his list
+  .delete(function(req, res) {
+    var fbid = req.params.fbid;
+    var site = req.body.site;
+    var product_id = req.body.product_id;
+    db.unTrackProduct(fbid, site, product_id, function(productDeleted) {
+      if (productDeleted) {
+        res.json({message: "Product Removed"});
+      }
+    });
+
+  });
 
 router.route('/newprice')
   .post(function(req, res) {
-
+    var site = req.body.site;
+    var product_id = req.body.product_id;
+    var newPrice = req.body.newPrice;
+    db.getCurrentPrice(site, product_id, newPrice function(priceDiff) {
+      if (priceDiff < 0) {
+        // Price is falling, notify all trackers
+        
+      }
+      else if (priceDiff > 0) {
+        // Price is increasing, take any action?
+      }
+    });
   })
 
 

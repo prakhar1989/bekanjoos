@@ -105,12 +105,20 @@ exports.unTrackProduct = function (facebookid, productSite, productId, callback)
   })
 };
 
-function updateProductPrice(productSite, productId, updatedPrice){
+// exports.getCurrentPrice = function(productSite, productId, callback) {
+//   con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res) {
+//     if (!err) {
+//       callback(res[0].price);
+//     }
+//     else {
+//       console.log(err);
+//     }
+//   });
+// };
+
+exports updateProductPrice = function (productSite, productId, updatedPrice){
     con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
-      if (err) {
-        console.log('Product price could not be queried');
-        return 0;
-      } else {
+      if (!err) {
         var productPrice = res[0].price;
         if (updatedPrice != productPrice) {
           con.query('UPDATE product SET price=' + updatedPrice + ' WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
@@ -136,7 +144,7 @@ function updateProductPrice(productSite, productId, updatedPrice){
             });
           }
         });
-        return productPrice - updatedPrice;
+        return updatedPrice - productPrice;
       }
     });
 };
