@@ -81,7 +81,6 @@ var App = React.createClass({
             console.log("sending message to content script");
             chrome.tabs.sendMessage(tabs[0].id, {ACTION: "ADD_PRODUCT"}, function(response) {
                 var payload = response.payload;
-                console.log(payload);
                 if (payload) {
                     // add product to the list and send a POST to the server
                     request
@@ -91,7 +90,7 @@ var App = React.createClass({
                         .end(function(err, res) {
                             if (err) console.log(err);
                             else {
-                                console.log(res);
+                                payload.pid = payload.product_id;
                                 self.setState({
                                     products: [payload].concat(self.state.products),
                                     flashMsg: {
@@ -114,8 +113,7 @@ var App = React.createClass({
     },
     removeProduct(index) {
         var product = this.state.products[index];
-        console.log(product);
-        var id = product["product_id"];
+        console.log("jere");
         request
             .del(URL + '/api/user/' + getUserId() + "/product")
             .type('form')
@@ -124,8 +122,13 @@ var App = React.createClass({
                 product_id: product["pid"]
             })
             .end(function(err, res) {
+                var prod = this.state.products.filter((p) => p.pid !== product["pid"]);
                 this.setState({
-                    products: this.state.products.filter((_, i) => i !== index)
+                    products: prod,
+                    flashMsg: {
+                        status: 'success',
+                        text: "Product deleted from your tracking list"
+                    }
                 })
             }.bind(this));
     },
@@ -158,10 +161,6 @@ var App = React.createClass({
 });
 
 var FlashMsg = React.createClass({
-    propTypes: {
-        msg: React.PropTypes.String,
-        status: React.PropTypes.String
-    },
     render() {
         var {msg, status} = this.props;
         var error = status === "error";
