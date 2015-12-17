@@ -116,18 +116,6 @@ exports.registerUserProduct = function (facebookid, productSite, productId, call
     });
 };
 
-exports.unTrackProduct = function (facebookid, productSite, productId, callback) {
-  con.query("DELETE FROM userProducts WHERE fbid = " + facebookid + " AND site = '" + productSite + "' AND pid = " +  productId, function(err, res) {
-    if (!err) {
-      callback(true);
-    }
-    else {
-      console.log(err);
-      callback(false);
-    }
-  })
-};
-
 exports.updateProductPrice = function (productSite, productId, updatedPrice, callback){
     con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
       if (err) {
