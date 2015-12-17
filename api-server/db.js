@@ -81,6 +81,17 @@ exports.addProduct = function (productSite, productId, productTitle, productImag
     });
 };
 
+exports.unTrackProduct = function (facebookid, productSite, productId, callback) {
+    con.query("DELETE FROM userProducts WHERE fbid = " + facebookid + " AND site = '" + productSite + "' AND pid = " +  productId, function(err, res){
+      if (err) {
+        console.log('Product could not be untracked');
+        callback(false);
+      } else {
+        console.log('Product has been untracked for the user');
+      }
+   })
+};
+
 exports.registerUserProduct = function (facebookid, productSite, productId, callback){
     var userProduct = {fbid: facebookid, site: productSite, pid: productId};
     con.query('INSERT INTO userProducts SET?', userProduct, function(err,res){
@@ -98,14 +109,14 @@ exports.updateProductPrice = function (productSite, productId, updatedPrice, cal
     con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
       if (err) {
         console.log('Product price could not be queried');
-        callback(-1);
+        callback(null);
       } else {
         var productPrice = res[0].price;
         if (updatedPrice != productPrice) {
           con.query('UPDATE product SET price=' + updatedPrice + ' WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
             if (err) {
               console.log('Product price could not be updated');
-              callback(-1);
+              callback(null);
             } else {
               console.log('Product price has been updated');
             }
@@ -121,7 +132,7 @@ exports.updateProductPrice = function (productSite, productId, updatedPrice, cal
             con.query('INSERT INTO priceHistory SET?', priceUpdate, function(err,res){
               if (err) {
                 console.log('Price history failed to update');
-                callback(-1);
+                callback(null);
               } else {
                 console.log('Price history updated');
               }
