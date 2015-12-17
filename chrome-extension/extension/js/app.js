@@ -114,9 +114,15 @@ var App = React.createClass({
     },
     removeProduct(index) {
         var product = this.state.products[index];
+        console.log(product);
         var id = product["product_id"];
         request
-            .del(URL + '/api/product?product_id=' + id)
+            .del(URL + '/api/user/' + getUserId() + "/product")
+            .type('form')
+            .send({
+                site: product["site"], 
+                product_id: product["pid"]
+            })
             .end(function(err, res) {
                 this.setState({
                     products: this.state.products.filter((_, i) => i !== index)

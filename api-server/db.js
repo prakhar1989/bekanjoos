@@ -91,19 +91,16 @@ exports.addProduct = function (productSite, productId, productTitle, productImag
 
 
 exports.unTrackProduct = function (facebookid, productSite, productId, callback) {
-    con.query("DELETE FROM userProducts WHERE fbid = " + facebookid + " AND site = '" + productSite + "' AND pid = " +  productId, function(err, res){
+    con.query("DELETE FROM userProducts WHERE fbid = " + facebookid + " AND site = '" + productSite + "' AND pid = '" +  productId + "'", function(err, res){
       if (err) {
-        console.log('Product could not be untracked');
-        callback(false);
+        console.log('Product could not be untracked', err);
       } else {
         console.log('Product has been untracked for the user');
         con.query('DELETE FROM product WHERE (SELECT COUNT(*) FROM userProducts WHERE pid="' + productId + '") = 0 AND pid="' + productId + '"', function(err,res){
           if (err) {
-            console.log('Product could not be untracked');
-            callback(false);
+            console.log('asdasd Product could not be untracked', err);
           } else {
             console.log('Product had been untracked from service');
-            callback(true);
           }
         })
       }
@@ -203,8 +200,11 @@ exports.findUserProducts = function (facebookid, callback){
     });
 };
 
+ /*
+ * select fbid, GROUP_CONCAT(pid SEPARATOR ',') as pids from userProducts where pid in ("MOBECC4UQTJ5QZFR", "401013901692") group by fbid;
+ */
 exports.findProductUrls = function (callback){
-    con.query('SELECT site, pid as product_id, url FROM product', function(err,res){
+    con.query('select * from product', function(err,res){
       if (err) {
         console.log(err);
       } else {
