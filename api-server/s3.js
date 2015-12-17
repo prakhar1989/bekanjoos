@@ -3,7 +3,7 @@ var wget = require('wget-improved');
 var fs = require('fs');
 
 exports.storeInS3 = function(image_url, callback) {
-  var bucketName = 'bekanjoos-imgs';
+  var bucketName = 'bekanjoos-imgs-1';
   var src = image_url;
   var url_paths = src.split("/");
   var filename = url_paths[url_paths.length - 1];
