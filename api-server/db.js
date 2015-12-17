@@ -68,8 +68,8 @@ exports.doesProductExist = function (productSite, productId, callback) {
     })
 };
 
-exports.addProduct = function (productSite, productId, productTitle, productImage, productPrice, callback) {
-    var product = {site: productSite, pid: productId, title: productTitle, image: productImage, price: productPrice};
+exports.addProduct = function (productSite, productId, productTitle, productImage, productPrice, productUrl, callback) {
+    var product = {site: productSite, pid: productId, title: productTitle, image: productImage, price: productPrice, url: productUrl};
     con.query('INSERT INTO product SET?', product, function(err,res){
       if (err) {
         console.log('Failed to add product');
@@ -79,6 +79,27 @@ exports.addProduct = function (productSite, productId, productTitle, productImag
         callback(true);
       }
     });
+};
+
+
+exports.unTrackProduct = function (facebookid, productSite, productId, callback) {
+    con.query("DELETE FROM userProducts WHERE fbid = " + facebookid + " AND site = '" + productSite + "' AND pid = " +  productId, function(err, res){
+      if (err) {
+        console.log('Product could not be untracked');
+        callback(false);
+      } else {
+        console.log('Product has been untracked for the user');
+        con.query('DELETE FROM product WHERE (SELECT COUNT(*) FROM userProducts WHERE pid="' + productId + '") = 0 AND pid="' + productId + '"', function(err,res){
+          if (err) {
+            console.log('Product could not be untracked');
+            callback(false);
+          } else {
+            console.log('Product had been untracked from service');
+            callback(true);
+          }
+        })
+      }
+   })
 };
 
 
@@ -107,29 +128,18 @@ exports.unTrackProduct = function (facebookid, productSite, productId, callback)
   })
 };
 
-// exports.getCurrentPrice = function(productSite, productId, callback) {
-//   con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res) {
-//     if (!err) {
-//       callback(res[0].price);
-//     }
-//     else {
-//       console.log(err);
-//     }
-//   });
-// };
-
 exports.updateProductPrice = function (productSite, productId, updatedPrice, callback){
     con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
       if (err) {
         console.log('Product price could not be queried');
-        callback(null);
+        callback('error', null);
       } else {
         var productPrice = res[0].price;
         if (updatedPrice != productPrice) {
           con.query('UPDATE product SET price=' + updatedPrice + ' WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
             if (err) {
               console.log('Product price could not be updated');
-              callback(null);
+              callback('error', null);
             } else {
               console.log('Product price has been updated');
             }
@@ -145,7 +155,7 @@ exports.updateProductPrice = function (productSite, productId, updatedPrice, cal
             con.query('INSERT INTO priceHistory SET?', priceUpdate, function(err,res){
               if (err) {
                 console.log('Price history failed to update');
-                callback(null);
+                callback('error', null);
               } else {
                 console.log('Price history updated');
               }
@@ -182,12 +192,24 @@ exports.findUserDetails = function (facebookid, callback){
 };
 
 exports.findUserProducts = function (facebookid, callback){
-    con.query('SELECT site, pid, title, image, price from product WHERE (site,pid) IN (SELECT site, pid FROM userProducts WHERE fbid ="' + facebookid + '")', function(err,res){
+    con.query('SELECT site, pid, title, image, price, url from product WHERE (site,pid) IN (SELECT site, pid FROM userProducts WHERE fbid ="' + facebookid + '")', function(err,res){
       if (err) {
         console.log('Products not found for the user');
         callback(null);
       } else {
         console.log('Retrieved products for the user');
+        callback(res);
+      }
+    });
+};
+
+exports.findProductUrls = function (callback){
+    con.query('SELECT site, pid as product_id, url FROM product', function(err,res){
+      if (err) {
+        console.log('Product urls not found');
+        callback(null);
+      } else {
+        console.log('Product urls retrieved');
         callback(res);
       }
     });
