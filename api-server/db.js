@@ -124,18 +124,16 @@ exports.registerUserProduct = function (facebookid, productSite, productId, call
     });
 };
 
-exports.updateProductPrice = function (productSite, productId, updatedPrice, callback){
+exports.updateProductPrice = function (productSite, productId, updatedPrice){
     con.query('SELECT price FROM product WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
       if (err) {
         console.log('Product price could not be queried');
-        callback('error', null);
       } else {
         var productPrice = res[0].price;
         if (updatedPrice != productPrice) {
           con.query('UPDATE product SET price=' + updatedPrice + ' WHERE site="' + productSite + '" AND pid="' + productId + '"', function(err,res){
             if (err) {
               console.log('Product price could not be updated');
-              callback('error', null);
             } else {
               console.log('Product price has been updated');
             }
@@ -151,14 +149,12 @@ exports.updateProductPrice = function (productSite, productId, updatedPrice, cal
             con.query('INSERT INTO priceHistory SET?', priceUpdate, function(err,res){
               if (err) {
                 console.log('Price history failed to update');
-                callback('error', null);
               } else {
                 console.log('Price history updated');
               }
             });
           }
         });
-        callback(updatedPrice - productPrice);
       }
     });
 };
@@ -189,9 +185,9 @@ exports.findUserDetails = function (facebookid, callback){
 
 
 exports.findUserProducts = function (facebookid, callback){
-    var query = "select u.site, u.pid, p.title, p.image as image_url, CONCAT(p.currency, p.price) as price from " +
-    "userProducts as u, product as p where p.pid = u.pid and " +
-    "u.fbid = '" + facebookid + "' order by u.created_at desc";
+    var query = "SELECT u.site, u.pid, p.title, p.image as image_url, CONCAT(p.currency, p.price) AS price FROM " +
+    "userProducts AS u, product AS p WHERE p.pid = u.pid AND " +
+    "u.fbid = '" + facebookid + "' ORDER BY u.created_at DESC";
 
     con.query(query, function(err,res){
       if (err) {
