@@ -9,6 +9,7 @@ var http = require('http');
 var AWS = require('aws-sdk');
 var s3Writer = require('./s3.js');
 var db = require('./db.js');
+var numeral = require('numeraljs');
 
 var port = process.env.PORT || 9000;        // set our port
 
@@ -22,6 +23,22 @@ router.use(function(req, res, next) {
     next(); // make sure we go to the next routes and don't stop here
 });
 
+function parseCurrency(priceText) {
+    var i;
+    var price = priceText.trim();
+    for (i = 0; i < price.length; i++) {
+        if (parseInt(price[i]) >= 0 && parseInt(price[i]) <= 9) {
+            break;
+        }
+    }
+    var priceNumber = price.substr(i, price.length).trim(),
+        currency = price.substr(0, i).trim();
+
+    return {
+        currency: currency,
+        price: numeral().unformat(priceNumber)
+    }
+}
 
 // test route to make sure everything is working (accessed at GET http://localhost:8080/api)
 router.get('/', function(req, res) {
@@ -35,8 +52,7 @@ router.route('/register')
       var fbid = req.body.fbid;
       var email = req.body.email;
       db.registerUser(fbid, email);
-      // take some better action
-      res.send();
+      res.send({ 'success': true, 'id': fbid });
   })
 
 router.route('/user/:fbid/products')
@@ -44,7 +60,7 @@ router.route('/user/:fbid/products')
   .get(function(req, res) {
     var fbid = req.params.fbid;
     db.findUserProducts(fbid, function(allProducts) {
-      res.send(allProducts);
+      res.send({'products': allProducts});
     });
   })
 
@@ -55,13 +71,19 @@ router.route('/user/:fbid/product')
     var title = req.body.title;
     var url = req.body.url;
     var site = req.body.site;
-    var price = parseInt(req.body.price);
+    var currency = parseCurrency(req.body.price)["currency"]
+    var price = parseCurrency(req.body.price)["price"]
     var product_id = req.body.product_id;
+
+    // TODO: remove 
+    console.log(req.body);
+
     db.doesProductExist(site, product_id, function(productExists) {
       if (!productExists) {
         var image_url = req.body.image_url;
-        s3Writer.storeInS3(image_url, function(s3publicUrl) {
-          db.addProduct(site, product_id, title, s3publicUrl, price, url, function(productAdded) {
+        s3Writer.storeInS3(image_url, site, product_id, function(s3publicUrl) {
+          db.addProduct(site, product_id, 
+                  title, s3publicUrl, price, currency, url, function(productAdded) {
             if (productAdded) {
               db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
                 if (dbResponse == 'exists')

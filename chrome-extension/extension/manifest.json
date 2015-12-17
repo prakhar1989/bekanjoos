@@ -19,7 +19,8 @@
         "tabs",
         "activeTab",
         "background",
-        "http://localhost:5000/",
+        "http://localhost:9000/",
+        "http://ec2-54-236-125-44.compute-1.amazonaws.com/",
         "https://connect.facebook.net/en_US/sdk.js"
     ],
     "manifest_version": 2

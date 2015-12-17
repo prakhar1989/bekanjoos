@@ -4,7 +4,7 @@ var request = require('superagent');
 
 var VALID_SITES = ["www.ebay.com", "www.flipkart.com", "www.walmart.com", 
                    "www.target.com", "www.bestbuy.com", "www.amazon.com"];
-var URL = "http://localhost:5000";
+var URL = "http://localhost:9000";
 
 // get the current tab URl
 function getCurrentTabUrl(callback) {
@@ -42,6 +42,10 @@ function logoutUser() {
     localStorage.expiryTime = null;
 }
 
+function getUserId() {
+    return localStorage.id;
+}
+
 var App = React.createClass({
     getInitialState() {
         return {
@@ -58,7 +62,7 @@ var App = React.createClass({
             console.log("valid url", validURL);
         });
         request
-            .get(URL + '/api/products')
+            .get(URL + '/api/user/' + getUserId() + '/products')
             .end(function(err, res) {
                 if (err) console.log(err) 
                 else {
@@ -77,12 +81,17 @@ var App = React.createClass({
             console.log("sending message to content script");
             chrome.tabs.sendMessage(tabs[0].id, {ACTION: "ADD_PRODUCT"}, function(response) {
                 var payload = response.payload;
+                console.log(payload);
                 if (payload) {
                     // add product to the list and send a POST to the server
-                    request.post(URL + "/api/product").send(payload)
+                    request
+                        .post(URL + "/api/user/" + getUserId() + "/product")
+                        .type('form')
+                        .send(payload)
                         .end(function(err, res) {
                             if (err) console.log(err);
                             else {
+                                console.log(res);
                                 self.setState({
                                     products: [payload].concat(self.state.products),
                                     flashMsg: {
@@ -122,7 +131,8 @@ var App = React.createClass({
         chrome.tabs.create({url: url, selected: true});
     },
     render() {
-        var flashMsg = this.state.flashMsg;
+        var { flashMsg, products, validURL } = this.state;
+        products = products || [];
         if (!isLoggedIn()) {
             return <div>
                 <button onClick={this.handleLogin} className="login-btn"></button>
@@ -135,9 +145,8 @@ var App = React.createClass({
             { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> 
                 Track Product <i className="ion-plus-circled"></i></button> : null 
             }
-            <Products 
-                products={this.state.products} 
-                handleRemoveProduct={this.removeProduct} />
+            { products.length === 0 ? <h2>No Products added!</h2> :
+                <Products products={products} handleRemoveProduct={this.removeProduct} /> }
         </div>
     }
 });

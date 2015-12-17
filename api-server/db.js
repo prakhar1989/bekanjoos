@@ -68,11 +68,19 @@ exports.doesProductExist = function (productSite, productId, callback) {
     })
 };
 
-exports.addProduct = function (productSite, productId, productTitle, productImage, productPrice, productUrl, callback) {
-    var product = {site: productSite, pid: productId, title: productTitle, image: productImage, price: productPrice, url: productUrl};
+exports.addProduct = function (productSite, productId, productTitle, productImage, productPrice, productCurr, productUrl, callback) {
+    var product = {
+        site: productSite, 
+        pid: productId, 
+        title: productTitle, 
+        image: productImage, 
+        price: productPrice, 
+        currency: productCurr, 
+        url: productUrl
+    };
     con.query('INSERT INTO product SET?', product, function(err,res){
       if (err) {
-        console.log('Failed to add product');
+        console.log('Failed to add product', err);
         callback(false);
       } else {
         console.log('Product successfully added');
@@ -180,7 +188,7 @@ exports.findUserDetails = function (facebookid, callback){
 };
 
 exports.findUserProducts = function (facebookid, callback){
-    con.query('SELECT site, pid, title, image, price, url from product WHERE (site,pid) IN (SELECT site, pid FROM userProducts WHERE fbid ="' + facebookid + '")', function(err,res){
+    con.query('SELECT site, pid, title, image as image_url, price, url from product WHERE (site,pid) IN (SELECT site, pid FROM userProducts WHERE fbid ="' + facebookid + '")', function(err,res){
       if (err) {
         console.log('Products not found for the user');
         callback(null);
