@@ -128,11 +128,7 @@ router.route('/crawl/newprice')
     var site = req.body.site;
     var product_id = req.body.product_id;
     var newPrice = req.body.new_price;
-    db.updateProductPrice(site, product_id, newPrice, function(priceDiff) {
-        if (priceDiff < 0) {
-          // Price is falling, notify all trackers
-          console.log(newPrice);
-        }
+    db.updateProductPrice(site, product_id, newPrice);
     });
   })
 
