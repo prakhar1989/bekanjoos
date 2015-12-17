@@ -10,9 +10,6 @@ var AWS = require('aws-sdk');
 var s3Writer = require('./s3.js');
 var db = require('./db.js');
 
-// Connection URL for RDS instance
-var url = 'RDS URL';
-
 var port = process.env.PORT || 9000;        // set our port
 
 // ROUTES FOR OUR API
@@ -22,7 +19,6 @@ var router = express.Router();              // get an instance of the express Ro
 // middleware to use for all requests
 router.use(function(req, res, next) {
     // do logging
-    console.log('Something is happening.');
     next(); // make sure we go to the next routes and don't stop here
 });
 
@@ -33,52 +29,61 @@ router.get('/', function(req, res) {
 });
 
 
-router.route('/products')
+router.route('user/:fbid/products')
+  // get all the products assigned to a user (accessed at GET http://localhost:8080/api/:user_id)
+  .get(function(req, res) {
+    //var
+  })
 
-    // get all the products assigned to a user (accessed at GET http://localhost:8080/api/:user_id)
-    .get(function(req, res) {
-   //
-  //     res.json({ message: 'Get Request Called' });
-  //       MongoClient.connect(url, function (err, db) {
-  //         if (err) {
-  //           console.log('Unable to connect to the mongoDB server. Error:', err);
-  //         }
-  //         else{
-  //     var cursor = db.collection('users').find( );
-  //     cursor.each(function(err, doc) {
-  //     //  assert.equal(err, null);
-  //       if (doc != null) {
-  //        console.log(doc);
-  //       } else {
-  //        //callback();
-  //       }
-  //    });
-  //  }
-  //  });
+// add a new user with FB ID, or check existing user
+router.route('/login')
+  .post(function(req, res) {
+      var fbid = req.body.fbid;
+      var email = req.body.email;
+      db.registerUser(fbid, email);
+      // take some better action
+      res.send();
+  })
 
-    })
-
-router.route('/product')
-    // add a product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
+router.route('/user/:fbid/product')
+    // when a user wants to track a new product
     .post(function(req, res) {
+      var fbid = req.params.fbid;
       var title = req.body.title;
       var url = req.body.url;
       var site = req.body.site;
       var price = parseInt(req.body.price);
       var product_id = req.body.product_id;
-      console.log(typeof(product_id));
-      var image_url = req.body.image_url;
-      console.log();
-      s3Writer.storeInS3(image_url, function(publicUrl) {
-        var s3PublicUrl = publicUrl;
-        console.log(s3PublicUrl);
-        db.establishConnection();
-        db.registerUserProduct(6467090862, site, product_id, title, s3PublicUrl, price);
+      db.doesProductExist(site, product_id, function(productExists) {
+        if (!productExists) {
+          var image_url = req.body.image_url;
+          s3Writer.storeInS3(image_url, function(s3publicUrl) {
+            db.addProduct(site, product_id, title, s3publicUrl, price, function(productAdded) {
+              if (productAdded) {
+                db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
+                  if (dbResponse == 'exists')
+                    // can set status numbers to condition on based on client side requirements
+                    res.json({message: "You're already tracking this product"});
+                  if (dbResponse == 'added')
+                    res.json({message: "You are now tracking this product"});
+                });
+              }
+            });
+          });
+        }
+        else {
+          db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
+            if (dbResponse == 'exists')
+              // can set status numbers to condition on based on client side requirements
+              res.json({message: "You're already tracking this product"});
+            if (dbResponse == 'added')
+              res.json({message: "You are now tracking this product"});
+          });
+        }
       });
-      res.json({message: 'Got a request'});
     })
 
-    // update the product for the user (accessed at POST http://localhost:8080/api/:user_id/product)
+    // user wants to delete a product from his list
     .delete(function(req, res) {
       res.json({ status: 'product added', id: 10 });
 
