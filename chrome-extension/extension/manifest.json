@@ -1,5 +1,5 @@
 {
-    "name": "PriceTell",
+    "name": "BeKanjoos",
     "version": "0.0.1",
     "description": "Track your favorite producs online",
     "browser_action": {
@@ -12,9 +12,15 @@
                     "http://www.bestbuy.com/*", "http://www.amazon.com/*"],
         "js": ["lib/jquery-2.1.4.min.js", "js/content-script.js"]
     }],
+    "background": {
+        "scripts": ["background.js"]
+    },
     "permissions": [ 
+        "tabs",
         "activeTab",
-        "http://localhost:5000/"
+        "background",
+        "http://localhost:5000/",
+        "https://connect.facebook.net/en_US/sdk.js"
     ],
     "manifest_version": 2
 }

@@ -53,5 +53,9 @@ def addProduct():
             'id': 10
         })
 
+@app.route('/success')
+def success():
+    return "hello world"
+
 if __name__ == "__main__":
     app.run(debug=True)
