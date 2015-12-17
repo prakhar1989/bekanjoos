@@ -186,9 +186,9 @@ exports.findUserDetails = function (facebookid, callback){
 
 
 exports.findUserProducts = function (facebookid, callback){
-    var query = "select u.site, u.pid, p.title, p.image as image_url, CONCAT(p.currency, p.price) as price from " +
-    "userProducts as u, product as p where p.pid = u.pid and " +
-    "u.fbid = '" + facebookid + "' order by u.created_at desc";
+    var query = "SELECT u.site, u.pid, p.title, p.image as image_url, CONCAT(p.currency, p.price) AS price FROM " +
+    "userProducts AS u, product AS p WHERE p.pid = u.pid AND " +
+    "u.fbid = '" + facebookid + "' ORDER BY u.created_at DESC";
 
     con.query(query, function(err,res){
       if (err) {

@@ -75,14 +75,14 @@ router.route('/user/:fbid/product')
     var price = parseCurrency(req.body.price)["price"]
     var product_id = req.body.product_id;
 
-    // TODO: remove 
+    // TODO: remove
     console.log(req.body);
 
     db.doesProductExist(site, product_id, function(productExists) {
       if (!productExists) {
         var image_url = req.body.image_url;
         s3Writer.storeInS3(image_url, site, product_id, function(s3publicUrl) {
-          db.addProduct(site, product_id, 
+          db.addProduct(site, product_id,
                   title, s3publicUrl, price, currency, url, function(productAdded) {
             if (productAdded) {
               db.registerUserProduct(fbid, site, product_id, function(dbResponse) {
@@ -140,8 +140,16 @@ router.route('/crawl/allproducts')
 // get info of all products to call
   .get(function (req, res) {
     db.findProductUrls(function (products) {
-      if (products[0] !== undefined)
-        res.send(products);
+      if (products[0] !== undefined) {
+        //res.send(products);
+        db.getUserProducts(function(userProductMapping) {
+          res.json(
+            {'allProducts': products,
+             'usersToProducts': userProductMapping
+            }
+          );
+        });
+      }
     });
   })
 
