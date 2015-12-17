@@ -57,7 +57,6 @@ func getPriceForSite(url string, selector string) float64 {
 		price = parseCurrency(s.Text())
 	})
 	return price
-
 }
 
 func main() {
