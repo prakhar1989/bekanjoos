@@ -187,11 +187,15 @@ exports.findUserDetails = function (facebookid, callback){
     });
 };
 
+
 exports.findUserProducts = function (facebookid, callback){
-    con.query('SELECT site, pid, title, image as image_url, price, url from product WHERE (site,pid) IN (SELECT site, pid FROM userProducts WHERE fbid ="' + facebookid + '")', function(err,res){
+    var query = "select u.site, u.pid, p.title, p.image as image_url from " + 
+    "userProducts as u, product as p where p.pid = u.pid and " + 
+    "u.fbid = '" + facebookid + "' order by u.created_at desc";
+
+    con.query(query, function(err,res){
       if (err) {
-        console.log('Products not found for the user');
-        callback(null);
+        console.log(err);
       } else {
         console.log('Retrieved products for the user');
         callback(res);
@@ -202,8 +206,7 @@ exports.findUserProducts = function (facebookid, callback){
 exports.findProductUrls = function (callback){
     con.query('SELECT site, pid as product_id, url FROM product', function(err,res){
       if (err) {
-        console.log('Product urls not found');
-        callback(null);
+        console.log(err);
       } else {
         console.log('Product urls retrieved');
         callback(res);
