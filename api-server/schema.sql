@@ -18,7 +18,6 @@
 --
 -- Table structure for table `priceHistory`
 --
-
 DROP TABLE IF EXISTS `priceHistory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
@@ -26,7 +25,7 @@ CREATE TABLE `priceHistory` (
   `site` varchar(50) NOT NULL DEFAULT '',
   `pid` varchar(50) NOT NULL DEFAULT '',
   `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `price` int(11) NOT NULL,
+  `price` float(11) NOT NULL,
   PRIMARY KEY (`site`,`pid`,`time`),
   CONSTRAINT `priceHistory_ibfk_1` FOREIGN KEY (`site`, `pid`) REFERENCES `product` (`site`, `pid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -44,7 +43,9 @@ CREATE TABLE `product` (
   `pid` varchar(50) NOT NULL DEFAULT '',
   `title` varchar(200) DEFAULT NULL,
   `image` varchar(200) DEFAULT NULL,
-  `price` int(11) NOT NULL,
+  `price` float(11) NOT NULL,
+  `currency` varchar(5) NOT NULL,
+  `url` varchar(300),
   PRIMARY KEY (`site`,`pid`),
   UNIQUE KEY `idx_product` (`site`,`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -76,6 +77,7 @@ CREATE TABLE `userProducts` (
   `fbid` bigint(20) NOT NULL DEFAULT '0',
   `site` varchar(50) NOT NULL DEFAULT '',
   `pid` varchar(50) NOT NULL DEFAULT '',
+  `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`fbid`,`site`,`pid`),
   KEY `site` (`site`,`pid`),
   CONSTRAINT `userProducts_ibfk_1` FOREIGN KEY (`fbid`) REFERENCES `user` (`fbid`) ON DELETE CASCADE ON UPDATE CASCADE,
