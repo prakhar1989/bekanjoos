@@ -32,7 +32,8 @@ router.get('/', function(req, res) {
 router.route('user/:fbid/products')
   // get all the products assigned to a user (accessed at GET http://localhost:8080/api/:user_id)
   .get(function(req, res) {
-    //var
+    var fbid = req.params.fbid;
+    //db.findUserProducts(fbid, function()
   })
 
 // add a new user with FB ID, or check existing user
@@ -85,7 +86,14 @@ router.route('/user/:fbid/product')
 
     // user wants to delete a product from his list
     .delete(function(req, res) {
-      res.json({ status: 'product added', id: 10 });
+      var fbid = req.params.fbid;
+      var site = req.body.site;
+      var product_id = req.body.product_id;
+      db.unTrackProduct(fbid, site, product_id, function(productDeleted) {
+        if (productDeleted) {
+          res.json({message: "Product Removed"});
+        }
+      });
 
     });
 
