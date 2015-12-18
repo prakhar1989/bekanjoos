@@ -1,5 +1,9 @@
 document.addEventListener('DOMContentLoaded', function() {
     var access_token = localStorage.accessToken;
+    if (access_token == undefined) {
+        document.getElementById("msg").innerText = "There was a problem signing you in. Please try again.";
+        return
+    }
     var url = "https://graph.facebook.com/me?fields=id,name,email&access_token=" + access_token;
     $.get(url, function( data ) {
         localStorage.email = data.email;

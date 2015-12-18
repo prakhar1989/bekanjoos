@@ -1,4 +1,5 @@
 var successURL = 'www.facebook.com/connect/login_success.html';
+//var successURL = 'www.facebook.com/connect/blank.html';
 
 function onFacebookLogin() {
     chrome.tabs.query({}, function(tabs) {
@@ -24,10 +25,10 @@ function onFacebookLogin() {
                     var expiryTime = currentDate.getTime() + 1000 * (expires_in - 300);
                     localStorage.expiryTime = expiryTime;
                     
+                    chrome.tabs.remove(tabs[i].id, function() {
+                        chrome.tabs.create({url: chrome.extension.getURL('firsttime.html')});
+                    });
                 }
-                chrome.tabs.remove(tabs[i].id, function() {
-                    chrome.tabs.create({url: chrome.extension.getURL('firsttime.html')});
-                });
             }
         }
     });

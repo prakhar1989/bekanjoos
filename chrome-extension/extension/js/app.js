@@ -59,21 +59,22 @@ var App = React.createClass({
         getCurrentTabUrl(function(url) {
             var hostname = getHostname(url)
             validURL = VALID_SITES.indexOf(hostname) > -1;
-            console.log("valid url", validURL);
         });
-        request
-            .get(URL + '/api/user/' + getUserId() + '/products')
-            .end(function(err, res) {
-                if (err) console.log(err) 
-                else {
-                    if (this.isMounted()) {
-                        this.setState({
-                            products: res.body.products,
-                            validURL: validURL
-                        })
+        if (isLoggedIn()) {
+            request
+                .get(URL + '/api/user/' + getUserId() + '/products')
+                .end(function(err, res) {
+                    if (err) console.log(err) 
+                    else {
+                        if (this.isMounted()) {
+                            this.setState({
+                                products: res.body.products,
+                                validURL: validURL
+                            })
+                        }
                     }
-                }
-            }.bind(this));
+                }.bind(this));
+        }
     },
     addProduct() {
         var self = this;
@@ -148,14 +149,30 @@ var App = React.createClass({
             </div>
         }
         return <div>
-            <h1>PriceTell <i className="ion-arrow-graph-up-right"></i></h1>
+            <h1>BeKanjoos <i className="ion-arrow-graph-up-right"></i></h1>
             <span className="tagline">Helping you track your favorite online products</span>
             { flashMsg ? <FlashMsg status={flashMsg.status} msg={flashMsg.text} /> : null }
             { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> 
                 Track Product <i className="ion-plus-circled"></i></button> : null 
             }
-            { products.length === 0 ? <h2>No Products added!</h2> :
+            { products.length === 0 ? <NoProducts /> : 
                 <Products products={products} handleRemoveProduct={this.removeProduct} /> }
+        </div>
+    }
+});
+
+var NoProducts = React.createClass({
+    render() {
+        return <div>
+            <h2>No Products added!</h2>
+            <p>Head over to your favorite shopping websites to get started</p>
+            <ul>
+                <li><a href="http://www.bestbuy.com">Bestbuy</a></li>
+                <li><a href="http://www.ebay.com">Ebay</a></li>
+                <li><a href="http://www.flipkart.com">Flipkart</a></li>
+                <li><a href="http://www.walmart.com">Walmart</a></li>
+                <li><a href="http://www.target.com">Target</a></li>
+            </ul>
         </div>
     }
 });

@@ -8,6 +8,10 @@ body {
     font-family: Avenir, 'Lucida Grande', Tahoma, sans-serif;
 }
 
+button {
+    outline: none
+}
+
 p.error {
     color: #C53839;
     font-style: italic;
