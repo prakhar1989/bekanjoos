@@ -130,7 +130,6 @@ router.route('/crawl/newprice')
     var newPrice = req.body.new_price;
     db.updateProductPrice(site, product_id, newPrice);
     });
-  })
 
 router.route('/crawl/allproducts')
 // get info of all products to call
