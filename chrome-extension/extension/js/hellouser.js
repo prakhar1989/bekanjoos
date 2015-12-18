@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById("msg").innerText = "Welcome, " + localStorage.name;
 
         // make API call to server
-        var server_url = "http://localhost:9000/api/register";
+        var server_url = "http://ec2-54-236-125-44.compute-1.amazonaws.com/api/register";
         $.ajax({
             type: "POST",
             url: server_url,
