@@ -3,7 +3,7 @@ var ReactDOM = require('react-dom');
 var request = require('superagent');
 
 var VALID_SITES = ["www.ebay.com", "www.flipkart.com", "www.walmart.com", 
-                   "www.target.com", "www.bestbuy.com", "www.amazon.com"];
+                   "www.target.com", "www.bestbuy.com"];
 var URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com";
 
 // get the current tab URl
