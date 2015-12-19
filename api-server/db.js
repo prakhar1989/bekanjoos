@@ -8,15 +8,6 @@ var con = mysql.createConnection({
     database: "pricetell"
 });
 
-//establishConnection();
-//registerUser(6467090862,"viralshahrf@gmail.com");
-//registerUserProduct(6467090862,"Amazon","9773585360","LordOfTheRings","https://i.ytimg.com/vi/0B8C2MkkEqI/maxresdefault.jpg",30);
-//updateProductPrice("Amazon","9773585360",35);
-//findProductUsers("Amazon","9773585360");
-//findUserDetails(6467090862);
-//disconnect();
-//findUserProducts(6467090862);
-
 exports.establishConnection =  function (callback){
     con.connect(function(err){
         if (err) {
@@ -185,7 +176,7 @@ exports.findUserDetails = function (facebookid, callback){
 
 
 exports.findUserProducts = function (facebookid, callback){
-    var query = "SELECT u.site, u.pid, p.title, p.image as image_url, CONCAT(p.currency, p.price) AS price FROM " +
+    var query = "SELECT u.site, u.pid, p.url, p.title, p.image as image_url, CONCAT(p.currency, p.price) AS price FROM " +
     "userProducts AS u, product AS p WHERE p.pid = u.pid AND " +
     "u.fbid = '" + facebookid + "' ORDER BY u.created_at DESC";
 

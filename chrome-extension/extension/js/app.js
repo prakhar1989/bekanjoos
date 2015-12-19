@@ -5,6 +5,7 @@ var request = require('superagent');
 var VALID_SITES = ["www.ebay.com", "www.flipkart.com", "www.walmart.com", 
                    "www.target.com", "www.bestbuy.com"];
 var URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com";
+//var URL = "http://localhost:9000";
 
 // get the current tab URl
 function getCurrentTabUrl(callback) {
@@ -195,7 +196,7 @@ var Products = React.createClass({
         var productList = this.props.products.map(function(prod, i) {
             return <li key={i}> 
                 <div className="info">
-                    <h2><a href={prod.url}>{ prod.title }</a></h2> 
+                    <h2><a target="_blank" href={prod.url}>{ prod.title }</a></h2> 
                     <span> 
                         <span className="price">{prod.price} </span> 
                         on {prod.site} <i className="ion-information-circled"></i>
