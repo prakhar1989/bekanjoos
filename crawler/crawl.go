@@ -248,7 +248,7 @@ type EmailData struct {
 
 func generateEmailContent(products []Product) (text string) {
 	var doc bytes.Buffer
-	t, _ := template.ParseFiles("email.html")
+	t, _ := template.ParseFiles("base.html")
 	data := &EmailData{Count: len(products), Products: products}
 	t.Execute(&doc, data)
 	return doc.String()
