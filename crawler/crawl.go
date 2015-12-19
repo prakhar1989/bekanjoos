@@ -137,6 +137,7 @@ func startCrawl() {
 	}
 
 	// aggregating over websites
+	log.Println("Total products to crawl:", len(apiResponse.Products))
 	websiteGroup := make(map[string][]Product)
 	for i := range apiResponse.Products {
 		product := apiResponse.Products[i]
@@ -146,11 +147,13 @@ func startCrawl() {
 	}
 
 	// crawl over diff websites concurrently
-	done := make(chan bool, 4)
+	done := make(chan bool)
 	for k, v := range websiteGroup {
 		go crawlWebsiteGroup(k, v, done)
 	}
-	<-done
+	for i := 0; i < 5; i++ {
+		<-done
+	}
 }
 
 func main() {
