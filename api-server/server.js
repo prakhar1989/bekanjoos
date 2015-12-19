@@ -131,22 +131,25 @@ router.route('/crawl/newprice')
     db.updateProductPrice(site, product_id, newPrice);
     });
 
-router.route('/crawl/allproducts')
 // get info of all products to call
-  .get(function (req, res) {
+router.route('/crawl/allproducts')
+.get(function (req, res) {
     db.findProductUrls(function (products) {
-      if (products[0] !== undefined) {
-        //res.send(products);
         db.getUserProducts(function(userProductMapping) {
-          res.json(
-            {'allProducts': products,
-             'usersToProducts': userProductMapping
-            }
-          );
+            var mapping = userProductMapping.map(function(p) {
+                return {
+                    userid: p.fbid,
+                    email: p.email,
+                    productids: p.trackedProducts.split(",")
+                }
+            });
+            res.json({
+                'products': products, 
+                'mapping': mapping 
+            });
         });
-      }
     });
-  })
+})
 
 
 

@@ -190,9 +190,6 @@ exports.findUserProducts = function (facebookid, callback){
     });
 };
 
- /*
- * select fbid, GROUP_CONCAT(pid SEPARATOR ',') as pids from userProducts where pid in ("MOBECC4UQTJ5QZFR", "401013901692") group by fbid;
- */
 exports.findProductUrls = function (callback){
     con.query('select * from product', function(err,res){
       if (err) {
@@ -205,7 +202,7 @@ exports.findProductUrls = function (callback){
 };
 
 exports.getUserProducts = function(callback) {
-  con.query("select fbid, GROUP_CONCAT(pid SEPARATOR ',') as trackedProducts from userProducts group by fbid", function(err, res) {
+  con.query("select p.fbid, u.email, GROUP_CONCAT(p.pid SEPARATOR ',') as trackedProducts from userProducts as p, user as u where u.fbid = p.fbid group by p.fbid", function(err, res) {
     if (err) {
       console.log(err);
     }
