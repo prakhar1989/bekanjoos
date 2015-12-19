@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/PuerkitoBio/goquery"
 )
@@ -18,6 +19,7 @@ import (
 const BESTBUY_SELECTOR = ".item-price"
 const EBAY_SELECTOR = "span#prcIsum"
 const TARGET_SELECTOR = "span.offerPrice"
+const FLIPKART_SELECTOR = "span.selling-price"
 
 const API_URL = "http://localhost:9000/api/crawl/allproducts"
 
@@ -95,6 +97,8 @@ func crawlWebsite(url string) (price float64, err error) {
 		price = getPriceForSite(url, TARGET_SELECTOR)
 	} else if strings.Contains(website, "ebay") {
 		price = getPriceForSite(url, EBAY_SELECTOR)
+	} else if strings.Contains(website, "flipkart") {
+		price = getPriceForSite(url, FLIPKART_SELECTOR)
 	} else {
 		err = errors.New("Website not supported")
 	}
@@ -116,8 +120,20 @@ func startCrawl() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(len(apiResponse.Mapping))
-	fmt.Println(len(apiResponse.Products))
+	// begin crawl
+	totalProducts := len(apiResponse.Products)
+	log.Println("Starting crawl...")
+	for i := range apiResponse.Products {
+		var price float64
+		product := apiResponse.Products[i]
+		price, err = crawlWebsite(product.Url)
+		if err != nil {
+			log.Println("Unable to crawl website:"+product.Url, err)
+		}
+		fmt.Printf("[%d/%d] %s, %s %f | %f\n", i+1, totalProducts,
+			product.Site, product.Title[:15], product.Price, price)
+		time.Sleep(2 * time.Second)
+	}
 }
 
 func main() {
