@@ -231,14 +231,16 @@ func startCrawl() {
 	}
 
 	for k, v := range usersNotify {
-		//content := generateEmailContent(v)
-		//err := ioutil.WriteFile(k+".html", []byte(content), 0644)
-		//if err != nil {
-		//fmt.Printf("error writing to file\n")
-		//}
 		sendEmailToUser(k, generateEmailContent(v))
 	}
 
+}
+
+func dumpEmailToFile(file string, email string) {
+	err := ioutil.WriteFile(file+".html", []byte(email), 0644)
+	if err != nil {
+		fmt.Printf("error writing to file\n")
+	}
 }
 
 type EmailData struct {
