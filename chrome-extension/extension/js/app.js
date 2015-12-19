@@ -84,7 +84,17 @@ var App = React.createClass({
             chrome.tabs.sendMessage(tabs[0].id, {ACTION: "ADD_PRODUCT"}, function(response) {
                 var payload = response.payload;
                 if (payload) {
-                    // add product to the list and send a POST to the server
+                    // see if the product exists
+                    var productExists = self.state.products.filter(p => p.pid === payload.product_id).length;
+                    if (productExists) {
+                        self.setState({
+                            flashMsg: {
+                                status: 'error',
+                                text: "You're already tracking this product"
+                            }
+                        });
+                        return
+                    }
                     request
                         .post(URL + "/api/user/" + getUserId() + "/product")
                         .type('form')
