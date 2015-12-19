@@ -1,10 +1,13 @@
 package main
 
 import (
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io/ioutil"
 	"log"
+	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 
@@ -15,6 +18,29 @@ import (
 const BESTBUY_SELECTOR = ".item-price"
 const EBAY_SELECTOR = "span#prcIsum"
 const TARGET_SELECTOR = "span.offerPrice"
+
+const API_URL = "http://localhost:9000/api/crawl/allproducts"
+
+type Product struct {
+	Site     string
+	Pid      string
+	Title    string
+	Price    float64
+	Image    string
+	Currency string
+	Url      string
+}
+
+type UserProduct struct {
+	Userid     int64
+	Email      string
+	Productids []string
+}
+
+type ApiResponse struct {
+	Products []Product
+	Mapping  []UserProduct
+}
 
 func parsePrice(priceText string) float64 {
 	newPrice := strings.Join(strings.Split(priceText, ","), "")
@@ -59,14 +85,8 @@ func getPriceForSite(url string, selector string) float64 {
 	return price
 }
 
-func main() {
-	if len(os.Args) != 2 {
-		log.Fatal("Usage: ./crawl <url>")
-	}
-	url := os.Args[1]
+func crawlWebsite(url string) (price float64, err error) {
 	website := getWebsite(url)
-
-	var price float64
 	if strings.Contains(website, "walmart") {
 		price = GetPriceForWalmart(url)
 	} else if strings.Contains(website, "bestbuy") {
@@ -76,7 +96,30 @@ func main() {
 	} else if strings.Contains(website, "ebay") {
 		price = getPriceForSite(url, EBAY_SELECTOR)
 	} else {
-		log.Fatal("Website not supported")
+		err = errors.New("Website not supported")
 	}
-	fmt.Println(price)
+	return price, err
+}
+
+func startCrawl() {
+	resp, err := http.Get(API_URL)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer resp.Body.Close()
+	body, err := ioutil.ReadAll(resp.Body)
+
+	// let's try to urmarshal it
+	var apiResponse ApiResponse
+	err = json.Unmarshal(body, &apiResponse)
+
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(len(apiResponse.Mapping))
+	fmt.Println(len(apiResponse.Products))
+}
+
+func main() {
+	startCrawl()
 }
