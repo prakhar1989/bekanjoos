@@ -41,11 +41,36 @@ type UserProduct struct {
 	Userid     int64
 	Email      string
 	Productids []string
+	ProductSet *StringSet
 }
 
 type ApiResponse struct {
 	Products []Product
 	Mapping  []UserProduct
+}
+
+// creating a simple struct type
+type StringSet struct {
+	set map[string]bool
+}
+
+func NewStringSet() *StringSet {
+	return &StringSet{make(map[string]bool)}
+}
+
+func (set *StringSet) Add(s string) bool {
+	_, found := set.set[s]
+	set.set[s] = true
+	return !found
+}
+
+func (set *StringSet) Has(s string) bool {
+	_, found := set.set[s]
+	return found
+}
+
+func (set *StringSet) Remove(s string) {
+	delete(set.set, s)
 }
 
 func parsePrice(priceText string) float64 {
@@ -130,6 +155,13 @@ func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) 
 	ch <- filterProducts
 }
 
+func (m *UserProduct) createProductSet() {
+	m.ProductSet = NewStringSet()
+	for i := range m.Productids {
+		m.ProductSet.Add(m.Productids[i])
+	}
+}
+
 func startCrawl() {
 	resp, err := http.Get(API_URL)
 	if err != nil {
@@ -145,7 +177,11 @@ func startCrawl() {
 		log.Fatal(err)
 	}
 
-	// aggregating over websites
+	// initializing sets on the mapping
+	for i := range apiResponse.Mapping {
+		apiResponse.Mapping[i].createProductSet()
+	}
+
 	log.Println("Total products to crawl:", len(apiResponse.Products))
 	websiteGroup := make(map[string][]Product)
 	for i := range apiResponse.Products {
