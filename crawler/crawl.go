@@ -204,6 +204,22 @@ func startCrawl() {
 		changedProducts = append(changedProducts, products...)
 	}
 
+	// begin collecting users to be notified
+	usersNotify := make(map[string][]Product)
+	for i := range apiResponse.Mapping {
+		m := apiResponse.Mapping[i]
+		for j := range changedProducts {
+			p := changedProducts[j]
+			if m.ProductSet.Has(p.Pid) {
+				usersNotify[m.Email] = append(usersNotify[m.Email], p)
+			}
+		}
+	}
+
+	for k, v := range usersNotify {
+		fmt.Println(k, len(v))
+	}
+
 }
 
 func main() {
