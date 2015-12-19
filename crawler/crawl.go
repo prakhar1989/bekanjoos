@@ -21,7 +21,8 @@ const EBAY_SELECTOR = "span#prcIsum"
 const TARGET_SELECTOR = "span.offerPrice"
 const FLIPKART_SELECTOR = "span.selling-price"
 
-const API_URL = "http://localhost:9000/api/crawl/allproducts"
+//const API_URL = "http://localhost:9000/api/crawl/allproducts"
+const API_URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com/api/crawl/allproducts"
 
 type Product struct {
 	Site     string
@@ -105,6 +106,21 @@ func crawlWebsite(url string) (price float64, err error) {
 	return price, err
 }
 
+func crawlWebsiteGroup(website string, products []Product, done chan<- bool) {
+	log.Println("Starting crawl for:", website, "....")
+	totalProducts := len(products)
+	for i := range products {
+		price, err := crawlWebsite(products[i].Url)
+		if err != nil {
+			log.Println("Unable to crawl website:", products[i].Url, err)
+		}
+		fmt.Printf("[%d/%d] %s, %s %f | %f\n", i+1, totalProducts,
+			products[i].Site, products[i].Title[:15], products[i].Price, price)
+		time.Sleep(2 * time.Second)
+	}
+	done <- true
+}
+
 func startCrawl() {
 	resp, err := http.Get(API_URL)
 	if err != nil {
@@ -113,27 +129,28 @@ func startCrawl() {
 	defer resp.Body.Close()
 	body, err := ioutil.ReadAll(resp.Body)
 
-	// let's try to urmarshal it
 	var apiResponse ApiResponse
 	err = json.Unmarshal(body, &apiResponse)
 
 	if err != nil {
 		log.Fatal(err)
 	}
-	// begin crawl
-	totalProducts := len(apiResponse.Products)
-	log.Println("Starting crawl...")
+
+	// aggregating over websites
+	websiteGroup := make(map[string][]Product)
 	for i := range apiResponse.Products {
-		var price float64
 		product := apiResponse.Products[i]
-		price, err = crawlWebsite(product.Url)
-		if err != nil {
-			log.Println("Unable to crawl website:"+product.Url, err)
-		}
-		fmt.Printf("[%d/%d] %s, %s %f | %f\n", i+1, totalProducts,
-			product.Site, product.Title[:15], product.Price, price)
-		time.Sleep(2 * time.Second)
+		curr := websiteGroup[product.Site]
+		curr = append(curr, product)
+		websiteGroup[product.Site] = curr
 	}
+
+	// crawl over diff websites concurrently
+	done := make(chan bool, 4)
+	for k, v := range websiteGroup {
+		go crawlWebsiteGroup(k, v, done)
+	}
+	<-done
 }
 
 func main() {
