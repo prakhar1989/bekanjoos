@@ -24,6 +24,9 @@ const FLIPKART_SELECTOR = "span.selling-price"
 //const API_URL = "http://localhost:9000/api/crawl/allproducts"
 const API_URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com/api/crawl/allproducts"
 
+// time delay between crawls to a website (seconds)
+const TIME_DELAY = 2
+
 type Product struct {
 	Site     string
 	Pid      string
@@ -106,19 +109,25 @@ func crawlWebsite(url string) (price float64, err error) {
 	return price, err
 }
 
-func crawlWebsiteGroup(website string, products []Product, done chan<- bool) {
+func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) {
 	log.Println("Starting crawl for:", website, "....")
 	totalProducts := len(products)
+	var filterProducts []Product
 	for i := range products {
 		price, err := crawlWebsite(products[i].Url)
 		if err != nil {
 			log.Println("Unable to crawl website:", products[i].Url, err)
 		}
+		// TODO: Remove condition on website - for debugging only
+		if price < products[i].Price || products[i].Site == "Ebay" {
+			filterProducts = append(filterProducts, products[i])
+		}
+
 		fmt.Printf("[%d/%d] %s, %s %f | %f\n", i+1, totalProducts,
 			products[i].Site, products[i].Title[:15], products[i].Price, price)
-		time.Sleep(2 * time.Second)
+		time.Sleep(TIME_DELAY * time.Second)
 	}
-	done <- true
+	ch <- filterProducts
 }
 
 func startCrawl() {
@@ -146,14 +155,19 @@ func startCrawl() {
 		websiteGroup[product.Site] = curr
 	}
 
+	ch := make(chan []Product)
+	var changedProducts []Product
+
 	// crawl over diff websites concurrently
-	done := make(chan bool)
 	for k, v := range websiteGroup {
-		go crawlWebsiteGroup(k, v, done)
+		go crawlWebsiteGroup(k, v, ch)
 	}
-	for i := 0; i < 5; i++ {
-		<-done
+	// aggregate results
+	for i := 0; i < len(websiteGroup); i++ {
+		products := <-ch
+		changedProducts = append(changedProducts, products...)
 	}
+
 }
 
 func main() {
