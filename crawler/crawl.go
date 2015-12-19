@@ -13,6 +13,9 @@ import (
 	"time"
 
 	"github.com/PuerkitoBio/goquery"
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/ses"
 )
 
 // SELECTORS
@@ -27,6 +30,13 @@ const API_URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com/api/crawl/allp
 // time delay between crawls to a website (seconds)
 const TIME_DELAY = 2
 
+// init the SES service
+var sesSvc *ses.SES
+
+func init() {
+	sesSvc = ses.New(session.New(), aws.NewConfig().WithRegion("us-east-1"))
+}
+
 type Product struct {
 	Site     string
 	Pid      string
@@ -35,6 +45,7 @@ type Product struct {
 	Image    string
 	Currency string
 	Url      string
+	NewPrice float64
 }
 
 type UserProduct struct {
@@ -144,6 +155,7 @@ func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) 
 			log.Println("Unable to crawl website:", products[i].Url, err)
 		}
 		// TODO: Remove condition on website - for debugging only
+		products[i].NewPrice = price
 		if price < products[i].Price || products[i].Site == "Ebay" {
 			filterProducts = append(filterProducts, products[i])
 		}
@@ -217,9 +229,44 @@ func startCrawl() {
 	}
 
 	for k, v := range usersNotify {
-		fmt.Println(k, len(v))
+		sendEmailToUser(k, generateEmailContent(v))
 	}
 
+}
+
+func generateEmailContent(products []Product) (text string) {
+	head := "<h1>Hi!</h1>"
+	msg := fmt.Sprintf("<p>This is to let you know that %d "+
+		"of the products you are tracking have reduced in price</p>", len(products))
+	footer := "<h5>Grab them as soon as you can!</h5>"
+	text = head + msg + footer
+	return text
+}
+
+func sendEmailToUser(email string, text string) {
+	params := &ses.SendEmailInput{
+		Destination: &ses.Destination{
+			ToAddresses: []*string{
+				aws.String(email),
+			},
+		},
+		Message: &ses.Message{
+			Body: &ses.Body{
+				Html: &ses.Content{
+					Data: aws.String(text),
+				},
+			},
+			Subject: &ses.Content{
+				Data: aws.String("Notification from BeKanjoos"),
+			},
+		},
+		Source: aws.String("prakhar@prakhar.me"),
+	}
+	resp, err := sesSvc.SendEmail(params)
+	if err != nil {
+		log.Println("Unable to send email")
+	}
+	log.Println("Email send with id", resp)
 }
 
 func main() {
