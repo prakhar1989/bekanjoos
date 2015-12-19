@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html/template"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -229,18 +231,27 @@ func startCrawl() {
 	}
 
 	for k, v := range usersNotify {
+		//content := generateEmailContent(v)
+		//err := ioutil.WriteFile(k+".html", []byte(content), 0644)
+		//if err != nil {
+		//fmt.Printf("error writing to file\n")
+		//}
 		sendEmailToUser(k, generateEmailContent(v))
 	}
 
 }
 
+type EmailData struct {
+	Count    int
+	Products []Product
+}
+
 func generateEmailContent(products []Product) (text string) {
-	head := "<h1>Hi!</h1>"
-	msg := fmt.Sprintf("<p>This is to let you know that %d "+
-		"of the products you are tracking have reduced in price</p>", len(products))
-	footer := "<h5>Grab them as soon as you can!</h5>"
-	text = head + msg + footer
-	return text
+	var doc bytes.Buffer
+	t, _ := template.ParseFiles("email.html")
+	data := &EmailData{Count: len(products), Products: products}
+	t.Execute(&doc, data)
+	return doc.String()
 }
 
 func sendEmailToUser(email string, text string) {
