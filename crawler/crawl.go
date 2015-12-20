@@ -26,8 +26,7 @@ const EBAY_SELECTOR = "span#prcIsum"
 const TARGET_SELECTOR = "span.offerPrice"
 const FLIPKART_SELECTOR = "span.selling-price"
 
-//const API_URL = "http://localhost:9000/api/crawl/allproducts"
-const API_URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com/api/crawl/allproducts"
+const API_URL = "http://api.bekanjoos.co/api/crawl/allproducts"
 
 // time delay between crawls to a website (seconds)
 const TIME_DELAY = 2
@@ -273,7 +272,7 @@ func sendEmailToUser(email string, text string) {
 				Data: aws.String("Notification from BeKanjoos"),
 			},
 		},
-		Source: aws.String("prakhar@prakhar.me"),
+		Source: aws.String("notifier@bekanjoos.co"),
 	}
 	resp, err := sesSvc.SendEmail(params)
 	if err != nil {

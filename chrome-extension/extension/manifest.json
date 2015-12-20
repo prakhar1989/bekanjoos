@@ -20,7 +20,7 @@
         "activeTab",
         "background",
         "http://localhost:9000/",
-        "http://ec2-54-236-125-44.compute-1.amazonaws.com/",
+        "http://api.bekanjoos.co/",
         "https://connect.facebook.net/en_US/sdk.js"
     ],
     "manifest_version": 2

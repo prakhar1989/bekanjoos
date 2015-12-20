@@ -4,7 +4,8 @@ var request = require('superagent');
 
 var VALID_SITES = ["www.ebay.com", "www.flipkart.com", "www.walmart.com", 
                    "www.target.com", "www.bestbuy.com"];
-var URL = "http://ec2-54-236-125-44.compute-1.amazonaws.com";
+
+var URL = "http://api.bekanjoos.co";
 //var URL = "http://localhost:9000";
 
 // get the current tab URl
