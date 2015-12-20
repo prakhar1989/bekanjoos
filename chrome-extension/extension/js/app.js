@@ -161,7 +161,7 @@ var App = React.createClass({
             </div>
         }
         return <div>
-            <h1>BeKanjoos <i className="ion-arrow-graph-up-right"></i></h1>
+            <h1>Be Kanjoos <i className="ion-arrow-graph-up-right"></i></h1>
             <span className="tagline">Helping you track your favorite online products</span>
             { flashMsg ? <FlashMsg status={flashMsg.status} msg={flashMsg.text} /> : null }
             { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> 
