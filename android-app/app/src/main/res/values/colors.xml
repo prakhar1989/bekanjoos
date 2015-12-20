@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#FF4081</color>
+
+    <color name="priceColor">#69ce69</color>
+    <color name="productColor">#3f51b5</color>
+    <color name="websiteColor">#b1b1b1</color>
+    <color name = "default_background_label">#69ce69</color>
+
+</resources>
