@@ -3,7 +3,7 @@ var ReactDOM = require('react-dom');
 var request = require('superagent');
 
 var VALID_SITES = ["www.ebay.com", "www.flipkart.com", "www.walmart.com", 
-                   "www.target.com", "www.bestbuy.com"];
+                   "www.target.com", "www.bestbuy.com", "www.forever21.com"];
 
 var URL = "http://api.bekanjoos.co";
 //var URL = "http://localhost:9000";

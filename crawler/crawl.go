@@ -25,6 +25,7 @@ const BESTBUY_SELECTOR = ".item-price"
 const EBAY_SELECTOR = "span#prcIsum"
 const TARGET_SELECTOR = "span.offerPrice"
 const FLIPKART_SELECTOR = "span.selling-price"
+const FOREVER21_SELECTOR = "p.product-price"
 
 const API_URL = "http://api.bekanjoos.co/api/crawl/allproducts"
 
@@ -134,6 +135,8 @@ func crawlWebsite(url string) (price float64, err error) {
 		price = GetPriceForWalmart(url)
 	} else if strings.Contains(website, "bestbuy") {
 		price = getPriceForSite(url, BESTBUY_SELECTOR)
+	} else if strings.Contains(website, "forever21") {
+		price = getPriceForSite(url, FOREVER21_SELECTOR)
 	} else if strings.Contains(website, "target") {
 		price = getPriceForSite(url, TARGET_SELECTOR)
 	} else if strings.Contains(website, "ebay") {

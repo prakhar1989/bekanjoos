@@ -140,6 +140,33 @@ function getDetailsForAmazon() {
     return null;
 }
 
+function getDetailsForForever21() {
+    var parsedURL = parseUri(document.location.href);
+    var subparts = parsedURL.path.split('/').filter(function(k) { 
+        return k.length > 0 
+    });
+
+    if (subparts.indexOf("Product.aspx") > -1) {
+        var hasWasNowPrice = $("p.was-now-price").length > 0;
+        var price;
+        if (hasWasNowPrice) {
+            var parts = $("p.was-now-price").text().split(":");
+            price = parts[parts.length - 1];
+        } else {
+            price = $("p.product-price").text();
+        }
+        return {
+            product_id: parsedURL.queryKey.ProductID,
+            price: price,
+            url: document.location.href,
+            title: $("h1.product-title").text(),
+            site: 'Forever21',
+            image_url: $("img#ctl00_MainContent_productImage").attr('src')
+        }
+    }
+    return null;
+}
+
 function getProductDetails() {
     var details = null;
     var parsedURL = parseUri(document.location.href);
@@ -149,6 +176,8 @@ function getProductDetails() {
         details = getDetailsForEbay();
     } else if (parsedURL.authority === "www.walmart.com") {
         details = getDetailsForWalmart();
+    } else if (parsedURL.authority === "www.forever21.com") {
+        details = getDetailsForForever21();
     } else if (parsedURL.authority === "www.target.com") {
         details = getDetailsForTarget();
     } else if (parsedURL.authority === "www.bestbuy.com") {
@@ -177,5 +206,5 @@ chrome.runtime.onMessage.addListener(
 );
 
 $(document).on('ready', function() {
-    console.log("Hello from TrackThis!");
+    console.log("Hello from BeKanjoos!");
 });
