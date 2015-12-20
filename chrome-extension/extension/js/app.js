@@ -178,11 +178,12 @@ var NoProducts = React.createClass({
         return <div>
             <h2>No Products added!</h2>
             <div className="bannerlogos">
-                <a target="_blank" href="http://www.target.com"><img src="/img/target.png"/></a>
                 <a target="_blank" href="http://www.flipkart.com"><img src="/img/flipkart.png"/></a>
                 <a target="_blank" href="http://www.bestbuy.com"><img src="/img/bestbuy.png"/></a>
-                <a target="_blank" href="http://www.ebay.com"><img src="/img/ebay.png"/></a>
                 <a target="_blank" href="http://www.walmart.com"><img src="/img/walmart.png"/></a>
+                <a target="_blank" href="http://www.forever21.com"><img src="/img/forever21.png"/></a>
+                <a target="_blank" href="http://www.ebay.com"><img src="/img/ebay.png"/></a>
+                <a target="_blank" href="http://www.target.com"><img src="/img/target.png"/></a>
             </div>
             <p>Head over to your favorite shopping websites to get started</p>
         </div>

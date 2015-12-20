@@ -83,7 +83,7 @@ div.bannerlogos {
     display: flex;
     flex-direction: column;
     flex-wrap: wrap;
-    height: 80vw;
+    height: 100vw;
     font-size: 0; 
 }
 
