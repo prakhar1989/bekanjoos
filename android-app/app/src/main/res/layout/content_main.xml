@@ -25,6 +25,16 @@
         android:layout_height="match_parent"
 
         />
+
+        <ImageView
+            android:id="@+id/emptyView"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:src="@drawable/com_facebook_button_like_background"
+            android:visibility="gone"
+
+            />
+
     </android.support.v4.widget.SwipeRefreshLayout>
 
 </RelativeLayout>

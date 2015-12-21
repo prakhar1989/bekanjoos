@@ -1,12 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#3F51B5</color>
-    <color name="colorPrimaryDark">#303F9F</color>
+    <!--<color name="colorPrimary">#3F51B5</color>-->
+    <color name="colorPrimary">#922d50</color>
+    <color name="colorPrimaryDark">#7b344d</color>
     <color name="colorAccent">#FF4081</color>
 
     <color name="priceColor">#69ce69</color>
     <color name="productColor">#3f51b5</color>
     <color name="websiteColor">#b1b1b1</color>
     <color name = "default_background_label">#69ce69</color>
+
+    <color name="intro1">#80DEEA</color>
+    <color name="intro2">#BCAAA4</color>
+    <color name="intro3">#B39DDB</color>
+    <!--<color name="intro4">#A5D6A7</color>-->
+    <color name="intro4">#B0BEC5</color>
+
+
 
 </resources>

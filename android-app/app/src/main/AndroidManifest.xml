@@ -28,11 +28,7 @@
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -47,6 +43,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="bekanjoos.vinaygaba.com.bekanjoos.MainActivity" />
+        </activity>
+        <activity android:name="bekanjoos.vinaygaba.com.bekanjoos.Intro"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
     </application>
 
