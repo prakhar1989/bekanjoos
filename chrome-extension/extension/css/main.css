@@ -165,3 +165,8 @@ ul.products span.price {
     color: #539538
 }
 
+h1 > i.logout {
+    float: right;
+    cursor: pointer;
+    color: #C53839;
+}

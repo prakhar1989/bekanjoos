@@ -30,18 +30,11 @@ function getHostname(url) {
 }
 
 function isLoggedIn() {
+    // don't really care about expiry time of access tokens
     var accessToken = localStorage.accessToken;
     var expiry = new Date(parseInt(localStorage.expiryTime));
     var now = new Date();
-    return accessToken && now < expiry;
-}
-
-function logoutUser() {
-    localStorage.accessToken = null;
-    localStorage.id = null;
-    localStorage.email = null;
-    localStorage.name = null;
-    localStorage.expiryTime = null;
+    return accessToken !== null && accessToken !== undefined;
 }
 
 function getUserId() {
@@ -152,6 +145,12 @@ var App = React.createClass({
                             + "&scope=email&response_type=token";
         chrome.tabs.create({url: url, selected: true});
     },
+    handleLogout() {
+        localStorage.clear();
+        this.setState({
+            products: []
+        });
+    },
     render() {
         var { flashMsg, products, validURL } = this.state;
         products = products || [];
@@ -161,7 +160,10 @@ var App = React.createClass({
             </div>
         }
         return <div>
-            <h1>Be Kanjoos <i className="ion-arrow-graph-up-right"></i></h1>
+            <h1>Be Kanjoos 
+                <i className="ion-arrow-graph-up-right"></i>
+                <i title="Logout" className="logout ion-power" onClick={this.handleLogout}></i>
+            </h1>
             <span className="tagline">Helping you track your favorite online products</span>
             { flashMsg ? <FlashMsg status={flashMsg.status} msg={flashMsg.text} /> : null }
             { this.state.validURL ? <button onClick={this.addProduct} className="add-product"> 
