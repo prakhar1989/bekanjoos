@@ -155,8 +155,12 @@ func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) 
 	var filterProducts []Product
 	for i := range products {
 		price, err := crawlWebsite(products[i].Url)
-		if err != nil {
+		if err != nil || price == 0 {
+			// in case of error while crawling, send a debugging email
 			log.Println("Unable to crawl website:", products[i].Url, err)
+			msg := "Error trying to crawl: " + products[i].Url
+			go sendErrorEmail(msg)
+			continue
 		}
 		// TODO: Remove condition on website - for debugging only
 		products[i].NewPrice = price
@@ -282,6 +286,33 @@ func sendEmailToUser(email string, text string) {
 		log.Println("Unable to send email")
 	}
 	log.Println("Email send with id", resp)
+}
+
+func sendErrorEmail(text string) {
+	params := &ses.SendEmailInput{
+		Destination: &ses.Destination{
+			ToAddresses: []*string{
+				aws.String("prakhar@prakhar.me"),
+				aws.String("gaurang.sadekar@gmail.com"),
+			},
+		},
+		Message: &ses.Message{
+			Body: &ses.Body{
+				Html: &ses.Content{
+					Data: aws.String(text),
+				},
+			},
+			Subject: &ses.Content{
+				Data: aws.String("Error while crawling - BeKanjoos"),
+			},
+		},
+		Source: aws.String("issue@bekanjoos.co"),
+	}
+	resp, err := sesSvc.SendEmail(params)
+	if err != nil {
+		log.Println("Unable to send debug email")
+	}
+	log.Println("sent debug email", resp)
 }
 
 func main() {
