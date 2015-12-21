@@ -165,7 +165,7 @@ func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) 
 		}
 
 		fmt.Printf("[%d/%d] %s, %s %f | %f\n", i+1, totalProducts,
-			products[i].Site, products[i].Title[:15], products[i].Price, price)
+			products[i].Site, products[i].Pid, products[i].Price, price)
 		time.Sleep(TIME_DELAY * time.Second)
 	}
 	ch <- filterProducts
