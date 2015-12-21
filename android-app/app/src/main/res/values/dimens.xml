@@ -12,4 +12,7 @@
     <dimen name="card_margin">8dp</dimen>
 
     <dimen name="productNameDetail">22dp</dimen>
+    <dimen name="tagline">18dp</dimen>
+    <dimen name="welcome">25dp</dimen>
+    <dimen name="loginButtonHeight">50dp</dimen>
 </resources>

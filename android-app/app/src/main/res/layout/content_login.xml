@@ -12,14 +12,48 @@
     tools:context="bekanjoos.vinaygaba.com.bekanjoos.LoginActivity"
     tools:showIn="@layout/activity_login">
 
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/logo512"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentTop="true"
+        android:id="@+id/imageView"
+        android:layout_margin="50dp"
+        />
+
+    <TextView
+        android:id="@+id/welcome"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:textSize="@dimen/welcome"
+        android:text="@string/welcome"
+        android:layout_centerHorizontal="true"
+        android:textColor="@color/colorPrimary"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/tagline"
+        android:id="@+id/tagline"
+        android:layout_margin="@dimen/activity_horizontal_margin"
+        android:layout_below="@+id/welcome"
+        android:textSize="@dimen/tagline"
+        android:gravity="center"/>
+
 
     <com.facebook.login.widget.LoginButton
         android:id="@+id/login_button"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:layout_marginBottom="30dp" />
+        android:layout_marginBottom="30dp"
+        android:layout_marginLeft="@dimen/activity_horizontal_margin"
+        android:layout_marginRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="15dp"
+        android:paddingBottom="15dp"
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"/>
 
 </RelativeLayout>

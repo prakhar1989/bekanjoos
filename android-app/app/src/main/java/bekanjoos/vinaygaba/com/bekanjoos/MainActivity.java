@@ -16,11 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.facebook.FacebookSdk;
 import com.facebook.login.LoginManager;
-import com.squareup.okhttp.Headers;
 import com.squareup.okhttp.MediaType;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -32,9 +32,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
-import retrofit.Call;
-import retrofit.Callback;
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
@@ -44,6 +41,7 @@ public class MainActivity extends AppCompatActivity {
     public static final String LOG_TAG = "MainActivity";
     public static final String BASE_URL = "http://api.bekanjoos.co";
     private static RecyclerView mRecyclerView;
+    ImageView emptyView;
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -66,22 +64,15 @@ public class MainActivity extends AppCompatActivity {
         id = prefs.getString("id", "");
         Log.e("id",id);
         swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swiperefresh);
+        emptyView = (ImageView)findViewById(R.id.emptyView);
         // use a linear layout manager
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
         productList = new ArrayList<Product>();
 
-        //populate dummy product data
-        //populateProducts();
-        // specify an adapter (see also next example)
-
-
-
-//        mAdapter.notifyDataSetChanged();
-
-
         mAdapter = new CustomAdapter(productList,getApplicationContext(),id);
         mRecyclerView.setAdapter(mAdapter);
+
 
         loadProducts();
 
@@ -115,11 +106,6 @@ public class MainActivity extends AppCompatActivity {
                 .build();
         // prepare call in Retrofit 2.0
         endpoint = retrofit.create(RetrofitEndpoints.class);
-
-        //Load products
-
-
-
 
         /*
         * Sets up a SwipeRefreshLayout.OnRefreshListener that is invoked when the user
@@ -212,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
                 productList = prodList;
 
 
+
                 //Log.e("Size",productList.size()+"");
                 new Handler(Looper.getMainLooper()).post(new Runnable() {
 
@@ -221,6 +208,13 @@ public class MainActivity extends AppCompatActivity {
                         mAdapter = new CustomAdapter(productList,getApplicationContext(),id);
                         mRecyclerView.setAdapter(mAdapter);
                         mAdapter.notifyDataSetChanged();
+                        if(productList.isEmpty()){
+                            mRecyclerView.setVisibility(View.GONE);
+                            emptyView.setVisibility(View.VISIBLE);
+                        } else{
+                            mRecyclerView.setVisibility(View.VISIBLE);
+                            emptyView.setVisibility(View.GONE);
+                        }
                         swipeRefreshLayout.setRefreshing(false);
                     }
                 });
@@ -352,7 +346,10 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }
 
 

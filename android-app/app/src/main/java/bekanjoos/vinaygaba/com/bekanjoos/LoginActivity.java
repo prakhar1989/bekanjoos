@@ -137,4 +137,8 @@ public class LoginActivity extends AppCompatActivity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+    }
 }
