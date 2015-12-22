@@ -158,13 +158,17 @@ func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) 
 		if err != nil || price == 0 {
 			// in case of error while crawling, send a debugging email
 			log.Println("Unable to crawl website:", products[i].Url, err)
-			msg := "Error trying to crawl: " + products[i].Url
+			var msg string
+			if price == 0 {
+				msg = "Got a zero price while crawling: " + products[i].Url
+			} else {
+				msg = "Unable to crawl website"
+			}
 			go sendErrorEmail(msg)
 			continue
 		}
-		// TODO: Remove condition on website - for debugging only
 		products[i].NewPrice = price
-		if price < products[i].Price || products[i].Site == "Ebay" {
+		if price < products[i].Price {
 			filterProducts = append(filterProducts, products[i])
 		}
 
