@@ -3,13 +3,12 @@ Crawler
 
 ### Run
 ```
-$ ./bin/crawl <url>
+$ ./bin/crawl
 ```
 
 ### Build
 ```
-$ cd crawler 
-$ go run crawler.go walmart.go <url>
+$ make
 ```
 
 ### Run Tests
