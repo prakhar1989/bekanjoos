@@ -140,6 +140,7 @@ func crawlWebsiteGroup(website string, products []Product, ch chan<- []Product) 
 			} else {
 				msg = "Unable to crawl website"
 			}
+			log.Println(msg)
 			//go sendErrorEmail(msg)
 			continue
 		}
